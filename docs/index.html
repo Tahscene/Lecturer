@@ -1,1538 +1,1450 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BD CSE Lecturer Job Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --border: #30363d;
-      --accent: #58a6ff;
-      --accent2: #3fb950;
-      --text: #e6edf3;
-      --muted: #8b949e;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Space Grotesk', sans-serif;
-      min-height: 100vh;
-    }
-    header {
-      background: linear-gradient(135deg, #0d1117 0%, #1a2332 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 2rem;
-      text-align: center;
-    }
-    header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-    header p { color: var(--muted); font-size: 0.9rem; }
-    .meta {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-    }
-    .meta span {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 0.3rem 0.9rem;
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-    .meta span b { color: var(--accent); }
-    .filters {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      padding: 1.5rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      align-items: center;
-    }
-    .filters input {
-      flex: 1;
-      min-width: 200px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.9rem;
-      outline: none;
-    }
-    .filters input:focus { border-color: var(--accent); }
-    .filters select {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.9rem;
-      outline: none;
-      cursor: pointer;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1rem;
-      padding: 0 2rem 3rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.25rem;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-      position: relative;
-    }
-    .card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(88,166,255,0.1);
-    }
-    .badge {
-      display: inline-block;
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      margin-bottom: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .card h3 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      line-height: 1.4;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-    .card .inst {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 0.3rem;
-    }
-    .card .date {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .card a {
-      color: var(--accent);
-      font-size: 0.85rem;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .card a:hover { text-decoration: underline; }
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 3rem;
-      grid-column: 1/-1;
-      font-size: 1rem;
-    }
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.8rem;
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CSE Lecturer Jobs · BD</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#fafaf8;
+  color:#1a1a1a;
+  min-height:100vh;
+}
+
+/* subtle dot grid — like printed paper */
+body::before{
+  content:'';
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle,#05966918 1.2px,transparent 1.2px);
+  background-size:26px 26px;
+}
+
+/* thin top accent bar */
+.top-bar{
+  height:4px;
+  background:linear-gradient(90deg,#059669,#db2777,#059669);
+  background-size:200% auto;
+  animation:slide 4s linear infinite;
+}
+@keyframes slide{to{background-position:200% center}}
+
+.page{position:relative;z-index:1;max-width:1140px;margin:0 auto;padding:0 1.5rem}
+
+/* ── Hero ── */
+header{
+  text-align:center;
+  padding:3.5rem 1rem 2rem;
+  border-bottom:1px solid #e8e4dc;
+  margin-bottom:2rem;
+}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  border:1.5px solid #05966935;
+  background:#f0fdf4;
+  border-radius:99px;padding:.3rem 1rem;
+  font-size:.72rem;font-weight:600;color:#059669;
+  text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:1.2rem;
+}
+header h1{
+  font-family:'Lora',serif;
+  font-size:clamp(1.8rem,4.5vw,3rem);
+  font-weight:700;
+  line-height:1.18;
+  color:#111;
+  margin-bottom:.75rem;
+}
+header h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,#059669,#db2777);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.subtitle{
+  font-size:.92rem;color:#6b7280;
+  max-width:440px;margin:0 auto 1.5rem;line-height:1.65;
+}
+.stats{
+  display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;
+}
+.stat{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  padding:.38rem .9rem;
+  font-size:.78rem;color:#6b7280;
+  box-shadow:0 1px 4px #0000000a;
+}
+.stat b{color:#059669;font-weight:600}
+
+/* ── Search ── */
+.toolbar{
+  display:flex;flex-direction:column;gap:.6rem;
+  margin-bottom:1.8rem;
+}
+.search-box{
+  display:flex;gap:.5rem;align-items:center;
+  background:#fff;border:1.5px solid #e5e7eb;
+  border-radius:12px;padding:.5rem .5rem .5rem 1rem;
+  box-shadow:0 2px 8px #05966910;
+  transition:border-color .2s;
+}
+.search-box:focus-within{border-color:#059669}
+.search-box input{
+  flex:1;border:none;outline:none;
+  font-family:inherit;font-size:.9rem;color:#111;
+  background:transparent;
+}
+.search-box input::placeholder{color:#9ca3af}
+.clear-btn{
+  background:#f3f4f6;border:1px solid #e5e7eb;
+  border-radius:8px;padding:.35rem .85rem;
+  font-size:.78rem;color:#6b7280;
+  cursor:pointer;font-family:inherit;
+  transition:background .15s;
+}
+.clear-btn:hover{background:#e5e7eb}
+.chips{display:flex;gap:.45rem;flex-wrap:wrap;}
+.chip{
+  border:1px solid #e5e7eb;background:#fff;
+  border-radius:99px;padding:.25rem .85rem;
+  font-size:.76rem;font-weight:500;color:#6b7280;
+  cursor:pointer;transition:all .15s;
+}
+.chip.active{
+  background:#059669;border-color:#059669;color:#fff;
+}
+
+/* ── Cards ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:.9rem;
+  margin-bottom:4rem;
+}
+.card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:1.2rem;
+  cursor:pointer;
+  transition:border-color .2s,transform .18s,box-shadow .18s;
+  box-shadow:0 1px 4px #0000000a;
+}
+.card:hover{
+  border-color:#059669;
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px #05966912;
+}
+.card-top{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:.8rem;
+}
+.badge{
+  color:#fff;font-size:.68rem;font-weight:700;
+  padding:.18rem .6rem;border-radius:99px;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.ago{font-size:.73rem;color:#9ca3af}
+.ctitle{
+  font-size:.93rem;font-weight:600;
+  line-height:1.4;color:#111;margin-bottom:.4rem;
+}
+.cinst{font-size:.82rem;color:#6b7280;margin-bottom:.9rem}
+.view-btn{
+  display:inline-block;
+  background:linear-gradient(135deg,#059669,#db2777);
+  color:#fff;text-decoration:none;
+  font-size:.78rem;font-weight:600;
+  padding:.32rem .85rem;border-radius:8px;
+  transition:opacity .15s;float:right;
+}
+.view-btn:hover{opacity:.86}
+.empty{
+  text-align:center;color:#9ca3af;
+  padding:4rem 2rem;grid-column:1/-1;font-size:.95rem;
+}
+
+/* ── Footer ── */
+footer{
+  text-align:center;padding:1.5rem;
+  border-top:1px solid #e8e4dc;
+  color:#9ca3af;font-size:.78rem;
+  position:relative;z-index:1;
+}
+footer a{color:#059669;text-decoration:none}
+</style>
 </head>
 <body>
+<div class="top-bar"></div>
 
+<div class="page">
 <header>
-  <h1>🎓 BD CSE/IT Lecturer Job Tracker</h1>
-  <p>Auto-fetches from BDJobs + 40+ university websites every 3 hours</p>
-  <div class="meta">
-    <span>📋 Total Jobs: <b>131</b></span>
-    <span>🔄 Last updated: <b>2026-05-24 15:55 UTC</b></span>
-    <span>🏫 <b>40+</b> universities monitored</span>
+  <div class="pill">&#127979; CSE &amp; IT · Bangladesh</div>
+  <h1>Hello Ma&rsquo;am,<br><em>Find Lecturer Jobs Before Others</em> &#10024;</h1>
+  <p class="subtitle">
+    Only <strong>CSE &amp; IT Lecturer</strong> positions — fetched from BDJobs +
+    50+ university websites, every 3 hours, automatically.
+  </p>
+  <div class="stats">
+    <div class="stat">Active Jobs: <b>132</b></div>
+    <div class="stat">Updated: <b>2026-05-24 18:45 UTC</b></div>
+    <div class="stat"><b>50+</b> universities</div>
+    <div class="stat">Checks every <b>3 hrs</b></div>
   </div>
 </header>
 
-<div class="filters">
-  <input type="text" id="search" placeholder="🔍 Search by title or institution..."/>
-  <select id="sourceFilter">
-    <option value="">All Sources</option>
-    <option value="BDJobs">BDJobs</option>
-    <option value="university">University Websites</option>
-  </select>
+<div class="toolbar">
+  <div class="search-box">
+    <input id="q" type="text" placeholder="Search by title or university..." oninput="filt()"/>
+    <button class="clear-btn" onclick="document.getElementById('q').value='';filt()">Clear</button>
+  </div>
+  <div class="chips" id="chips"></div>
 </div>
 
 <div class="grid" id="grid">
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMitAFBVV95cUxQS0ZlWXJiZjlWRFlGdWM0UUkyMUhSOFpyRl91Zl8tbDJkYUR0SXYxNjZ5MGJZdVZkYndLN0dBNmVPd2JyQXdFNWJLQUJxN0xkbXhJT1NOdmZ2MGpOVUNUdlhNeVlnOWRseHVHa3U4NTJ1cGtKdW01M0NLam1mdXkzMkRfTDNCVHZrT1cydWVIQ1Q0MGViempTdWRmaDNCWm8ybTU4WDBab09IU2lTNWJEek0xM3c?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>CECH welcomes 25 new faculty members to the University of Cincinnati - University of Cincinnati</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxQS0ZlWXJiZjlWRFlGdWM0UUkyMUhSOFpyRl91Zl8tbDJkYUR0SXYxNjZ5MGJZdVZkYndLN0dBNmVPd2JyQXdFNWJLQUJxN0xkbXhJT1NOdmZ2MGpOVUNUdlhNeVlnOWRseHVHa3U4NTJ1cGtKdW01M0NLam1mdXkzMkRfTDNCVHZrT1cydWVIQ1Q0MGViempTdWRmaDNCWm8ybTU4WDBab09IU2lTNWJEek0xM3c?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiggFBVV95cUxPRWpSZ3JPbkkxT2E5VTFTMjZIUUYwRU1lcGVSVFlTWmFNcTRPa2ZzVGFaRjdZMWExVFo1TjZYa1FDbUhYelJGRkliV05BWjZUTkVUYlJMVHFFX3FLSHhsMll2OU1vTWpWQms3TzRDd3lkZUtsVFR2dzV5SDlnNmtSSmJB?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>BU CS opens search for new faculty members! | Computer Science - Boston University</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPRWpSZ3JPbkkxT2E5VTFTMjZIUUYwRU1lcGVSVFlTWmFNcTRPa2ZzVGFaRjdZMWExVFo1TjZYa1FDbUhYelJGRkliV05BWjZUTkVUYlJMVHFFX3FLSHhsMll2OU1vTWpWQms3TzRDd3lkZUtsVFR2dzV5SDlnNmtSSmJB?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Computer Science welcomes 17 new faculty members - University of Illinois Urbana-Champaign</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://webapi.easternuni.edu.bd/media/career/Lecturer_CSE-1.pdf','_blank')">
-      <span class="badge" style="background:#2980b9">Eastern University</span>
-      <h3>📄 Download Job Description (PDF)</h3>
-      <p class="inst">🏫 Eastern University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://webapi.easternuni.edu.bd/media/career/Lecturer_CSE-1.pdf" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uttara.ac.bd/visiting-faculty-members/','_blank')">
-      <span class="badge" style="background:#2980b9">Uttara University</span>
-      <h3>[Faculty Post] Visiting Faculty Members</h3>
-      <p class="inst">🏫 Uttara University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uttara.ac.bd/visiting-faculty-members/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uttara.ac.bd/faculty/','_blank')">
-      <span class="badge" style="background:#2980b9">Uttara University</span>
-      <h3>[Faculty Post] Faculty Members</h3>
-      <p class="inst">🏫 Uttara University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uttara.ac.bd/faculty/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://manarat.ac.bd/all-faculty-members/','_blank')">
-      <span class="badge" style="background:#2980b9">Manarat Intl Univ</span>
-      <h3>[Faculty Post] All Faculty Members</h3>
-      <p class="inst">🏫 Manarat Intl Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://manarat.ac.bd/all-faculty-members/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-cse-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Assistant Professor CSE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/assistant-professor-cse-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/associate-professor-cse-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Associate Professor CSE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/associate-professor-cse-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-microbiology-and-immunology-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Lecturer Microbiology and Immunology</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/lecturer-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-microbiology-and-immunology-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Assistant Professor Microbiology and Immunology</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/assistant-professor-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/associate-professor-microbiology-and-immunology-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Associate Professor Microbiology and Immunology</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/associate-professor-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-eee-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Lecturer EEE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/lecturer-eee-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-eee-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Assistant Professor EEE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/assistant-professor-eee-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/associate-professor-eee-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Associate Professor EEE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/associate-professor-eee-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-pharmacy-261/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Lecturer Pharmacy</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/lecturer-pharmacy-261/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-pharmacy-261/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Assistant Professor Pharmacy</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/assistant-professor-pharmacy-261/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/academics/faculty-members/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>[Faculty Post] Faculty Members</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/academics/faculty-members/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://ictcell.cu.ac.bd/offi-email/','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong Univ</span>
-      <h3>[Faculty Post] Official Email for Faculty Members/Officers/Offices</h3>
-      <p class="inst">🏫 Chittagong Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://ictcell.cu.ac.bd/offi-email/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://cu.ac.bd/assets/forms/ZM3W594HRD_3-Class%20Appointment%20Form%20-%20Copy.pdf','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong Univ</span>
-      <h3>Class-3 Employment Application Form</h3>
-      <p class="inst">🏫 Chittagong Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://cu.ac.bd/assets/forms/ZM3W594HRD_3-Class%20Appointment%20Form%20-%20Copy.pdf" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://cu.ac.bd/wp-content/uploads/2026/02/M.-PHIL-formwithcircular.pdf','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong Univ</span>
-      <h3>বিস্তারিত দেখুন</h3>
-      <p class="inst">🏫 Chittagong Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://cu.ac.bd/wp-content/uploads/2026/02/M.-PHIL-formwithcircular.pdf" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.du.ac.bd/faculty_member','_blank')">
-      <span class="badge" style="background:#2980b9">Dhaka University</span>
-      <h3>[Faculty Post] Faculty Member
+<article class="card" onclick="window.open('https://cu.ac.bd/wp-content/uploads/2026/02/Lecturer-Marketing.pdf','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong University</span>
+    <span class="ago">Just now</span>
+  </div>
+  <h3 class="ctitle">বিস্তারিত দেখুন</h3>
+  <p class="cinst">&#127979; Chittagong University</p>
+  <a class="view-btn" href="https://cu.ac.bd/wp-content/uploads/2026/02/Lecturer-Marketing.pdf" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMitAFBVV95cUxQS0ZlWXJiZjlWRFlGdWM0UUkyMUhSOFpyRl91Zl8tbDJkYUR0SXYxNjZ5MGJZdVZkYndLN0dBNmVPd2JyQXdFNWJLQUJxN0xkbXhJT1NOdmZ2MGpOVUNUdlhNeVlnOWRseHVHa3U4NTJ1cGtKdW01M0NLam1mdXkzMkRfTDNCVHZrT1cydWVIQ1Q0MGViempTdWRmaDNCWm8ybTU4WDBab09IU2lTNWJEek0xM3c?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">2h ago</span>
+  </div>
+  <h3 class="ctitle">CECH welcomes 25 new faculty members to the University of Cincinnati - University of Cincinnati</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMitAFBVV95cUxQS0ZlWXJiZjlWRFlGdWM0UUkyMUhSOFpyRl91Zl8tbDJkYUR0SXYxNjZ5MGJZdVZkYndLN0dBNmVPd2JyQXdFNWJLQUJxN0xkbXhJT1NOdmZ2MGpOVUNUdlhNeVlnOWRseHVHa3U4NTJ1cGtKdW01M0NLam1mdXkzMkRfTDNCVHZrT1cydWVIQ1Q0MGViempTdWRmaDNCWm8ybTU4WDBab09IU2lTNWJEek0xM3c?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiggFBVV95cUxPRWpSZ3JPbkkxT2E5VTFTMjZIUUYwRU1lcGVSVFlTWmFNcTRPa2ZzVGFaRjdZMWExVFo1TjZYa1FDbUhYelJGRkliV05BWjZUTkVUYlJMVHFFX3FLSHhsMll2OU1vTWpWQms3TzRDd3lkZUtsVFR2dzV5SDlnNmtSSmJB?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">2h ago</span>
+  </div>
+  <h3 class="ctitle">BU CS opens search for new faculty members! | Computer Science - Boston University</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPRWpSZ3JPbkkxT2E5VTFTMjZIUUYwRU1lcGVSVFlTWmFNcTRPa2ZzVGFaRjdZMWExVFo1TjZYa1FDbUhYelJGRkliV05BWjZUTkVUYlJMVHFFX3FLSHhsMll2OU1vTWpWQms3TzRDd3lkZUtsVFR2dzV5SDlnNmtSSmJB?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">2h ago</span>
+  </div>
+  <h3 class="ctitle">Computer Science welcomes 17 new faculty members - University of Illinois Urbana-Champaign</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://webapi.easternuni.edu.bd/media/career/Lecturer_CSE-1.pdf','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Eastern University</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">📄 Download Job Description (PDF)</h3>
+  <p class="cinst">&#127979; Eastern University</p>
+  <a class="view-btn" href="https://webapi.easternuni.edu.bd/media/career/Lecturer_CSE-1.pdf" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uttara.ac.bd/visiting-faculty-members/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Uttara University</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Visiting Faculty Members</h3>
+  <p class="cinst">&#127979; Uttara University</p>
+  <a class="view-btn" href="https://www.uttara.ac.bd/visiting-faculty-members/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uttara.ac.bd/faculty/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Uttara University</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Faculty Members</h3>
+  <p class="cinst">&#127979; Uttara University</p>
+  <a class="view-btn" href="https://www.uttara.ac.bd/faculty/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://manarat.ac.bd/all-faculty-members/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Manarat Intl Univ</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] All Faculty Members</h3>
+  <p class="cinst">&#127979; Manarat Intl Univ</p>
+  <a class="view-btn" href="https://manarat.ac.bd/all-faculty-members/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-cse-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Assistant Professor CSE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/assistant-professor-cse-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/associate-professor-cse-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Associate Professor CSE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/associate-professor-cse-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-microbiology-and-immunology-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Lecturer Microbiology and Immunology</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/lecturer-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-microbiology-and-immunology-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Assistant Professor Microbiology and Immunology</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/assistant-professor-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/associate-professor-microbiology-and-immunology-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Associate Professor Microbiology and Immunology</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/associate-professor-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-eee-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Lecturer EEE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/lecturer-eee-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-eee-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Assistant Professor EEE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/assistant-professor-eee-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/associate-professor-eee-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Associate Professor EEE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/associate-professor-eee-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-pharmacy-261/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Lecturer Pharmacy</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/lecturer-pharmacy-261/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-pharmacy-261/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Assistant Professor Pharmacy</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/assistant-professor-pharmacy-261/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/academics/faculty-members/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Faculty Members</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/academics/faculty-members/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://ictcell.cu.ac.bd/offi-email/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong Univ</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Official Email for Faculty Members/Officers/Offices</h3>
+  <p class="cinst">&#127979; Chittagong Univ</p>
+  <a class="view-btn" href="https://ictcell.cu.ac.bd/offi-email/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://cu.ac.bd/assets/forms/ZM3W594HRD_3-Class%20Appointment%20Form%20-%20Copy.pdf','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong Univ</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Class-3 Employment Application Form</h3>
+  <p class="cinst">&#127979; Chittagong Univ</p>
+  <a class="view-btn" href="https://cu.ac.bd/assets/forms/ZM3W594HRD_3-Class%20Appointment%20Form%20-%20Copy.pdf" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://cu.ac.bd/wp-content/uploads/2026/02/M.-PHIL-formwithcircular.pdf','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong Univ</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">বিস্তারিত দেখুন</h3>
+  <p class="cinst">&#127979; Chittagong Univ</p>
+  <a class="view-btn" href="https://cu.ac.bd/wp-content/uploads/2026/02/M.-PHIL-formwithcircular.pdf" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.du.ac.bd/faculty_member','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Dhaka University</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">[Faculty Post] Faculty Member
                                             Profile</h3>
-      <p class="inst">🏫 Dhaka University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.du.ac.bd/faculty_member" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi3gFBVV95cUxPTDhrMHlOVl82VUdYa01NaVF3U3hOWWhDZi1RblBqUVVOWVBsMTdYNmhsYV9nRFlyRXhrVlV3ZzBnWlFoNE1DRVdxWDk4TG1lVWJjNVJHWnlzT3JRUFRiSzhrVmx4YVk3bF9sUkhHTG1RUHFwVVh2bmxMZUhvLXl5dFphTUhPOF9BZG9oWmhaamtFdjB6RU9PRUZSdE4td0Y3QlpUcHczcU9salgxOEd1V3BydzdPSllyeEc1eGlFY2RJR2Z0dWVXUmtOeG0tZGV1YWVaQ2xRN2U5V2xrSkE?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Lakhimpur Girls College Recruitment 2021- 1 Assistant Professor Vacancy, Job Openings - The Sentinel - of this Land, for its People</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMi3gFBVV95cUxPTDhrMHlOVl82VUdYa01NaVF3U3hOWWhDZi1RblBqUVVOWVBsMTdYNmhsYV9nRFlyRXhrVlV3ZzBnWlFoNE1DRVdxWDk4TG1lVWJjNVJHWnlzT3JRUFRiSzhrVmx4YVk3bF9sUkhHTG1RUHFwVVh2bmxMZUhvLXl5dFphTUhPOF9BZG9oWmhaamtFdjB6RU9PRUZSdE4td0Y3QlpUcHczcU9salgxOEd1V3BydzdPSllyeEc1eGlFY2RJR2Z0dWVXUmtOeG0tZGV1YWVaQ2xRN2U5V2xrSkE?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiqAJBVV95cUxNcnhjemN1eXp0ZnV2dmR4NmxuLXJwa1NVN2F3Q3FtYXQyTE1WV2tjV3pJNnBWLVJPZ040ZTdCMEUxeHo2YW02dVE2c05ya3V6TjBkeml1SHhzSDJ1MTZNOGRHb0s0WFlhM2I2LW8zalNQNjBrMDROZjJRRm9iWG5WNGNmVmFhRlpfdDlabnRZUUlUYUk0TXZna3ZrVGR2cVhROUlobVlvT09GSkFEOEhMXzRFSzJlOVV0dV9SVVZteGNhQWxaY2R3SHpBeGJqXzFzaXI0Ym1pWEMyT2xDbVZBWXE0eWl4eXQxemMxMHVPaVBJYjVQTWJvVURWaGZQd1ctNWJrb1E2V29iYnQycnRSbEFpbkVEbFFBTVRHMmRiZ0NpdVlWSDkzTdIBrgJBVV95cUxNdEFselhsbXBXcm9BcmNKMzd6MXZYU2toOVRCVkd2WmlBX1E0a0hwbnJKUnR4X1BUVzhPQVkzcVozTXF1Vzk2Ym5vc2w5Q2RGNHRKa3BkZXNFVllLUzdLSUlDQ0VpS1lBeFpMSVBWa2xjbGZJWXM4ZVVDb0J4cndrRWYtdHlqS2hJTzRDZFlCM3MxRU9OejJvaU1Ncm82LU94TFZDWWRSSmE2U2trbHZkeGZVZ2hxQTY1VHBtTkt5d1AyX0JUNURFcWRtWFhkcWVSU3R2Nk4wLVF5V1pwMVpMemNZaUtiOW0tWF9KclVhMDhHZlVYT0hoM3A5VGdycTh2eXEwcGVyR3hkcWhHTnpzbktjQVgxdkJ1S2F1RkdkeVh1OUJURzdNR0JVNDN6dw?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>MPPSC Assistant Professor Recruitment 2026: Notification out for 949 vacancies; check dates, eligibility, - The Times of India</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMiqAJBVV95cUxNcnhjemN1eXp0ZnV2dmR4NmxuLXJwa1NVN2F3Q3FtYXQyTE1WV2tjV3pJNnBWLVJPZ040ZTdCMEUxeHo2YW02dVE2c05ya3V6TjBkeml1SHhzSDJ1MTZNOGRHb0s0WFlhM2I2LW8zalNQNjBrMDROZjJRRm9iWG5WNGNmVmFhRlpfdDlabnRZUUlUYUk0TXZna3ZrVGR2cVhROUlobVlvT09GSkFEOEhMXzRFSzJlOVV0dV9SVVZteGNhQWxaY2R3SHpBeGJqXzFzaXI0Ym1pWEMyT2xDbVZBWXE0eWl4eXQxemMxMHVPaVBJYjVQTWJvVURWaGZQd1ctNWJrb1E2V29iYnQycnRSbEFpbkVEbFFBTVRHMmRiZ0NpdVlWSDkzTdIBrgJBVV95cUxNdEFselhsbXBXcm9BcmNKMzd6MXZYU2toOVRCVkd2WmlBX1E0a0hwbnJKUnR4X1BUVzhPQVkzcVozTXF1Vzk2Ym5vc2w5Q2RGNHRKa3BkZXNFVllLUzdLSUlDQ0VpS1lBeFpMSVBWa2xjbGZJWXM4ZVVDb0J4cndrRWYtdHlqS2hJTzRDZFlCM3MxRU9OejJvaU1Ncm82LU94TFZDWWRSSmE2U2trbHZkeGZVZ2hxQTY1VHBtTkt5d1AyX0JUNURFcWRtWFhkcWVSU3R2Nk4wLVF5V1pwMVpMemNZaUtiOW0tWF9KclVhMDhHZlVYT0hoM3A5VGdycTh2eXEwcGVyR3hkcWhHTnpzbktjQVgxdkJ1S2F1RkdkeVh1OUJURzdNR0JVNDN6dw?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiV0FVX3lxTFBpR3h3T2lGSHo2R1UxQ3JqckNNcmhYU0VfbDZWQlRGdTB2R2dnT0NDRjAwN0RZbWV3RFVsVG1fdGZ0aDR6bjdJSmcyN0p6bUZKMVBmekFiOA?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Govt abolishes senior lecturer post in updated MPO policy - bdnews24.com</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTFBpR3h3T2lGSHo2R1UxQ3JqckNNcmhYU0VfbDZWQlRGdTB2R2dnT0NDRjAwN0RZbWV3RFVsVG1fdGZ0aDR6bjdJSmcyN0p6bUZKMVBmekFiOA?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi9gFBVV95cUxQOFZOb2U1bFNkOFQ5aVF4cnc0X0pOWmtHRk1OQmhiTjdtbVQxOXhMNmJONXF3bWZLMEpMc0xEeFlEVnl5dFg2WHVLRHh6bFhGLTNlalRQVUpGanhCSWgxMExMbm9PeG9YVHJpREFXTW5WWGNJU3I0bndPOXVwTTA1dDN2T25taVpHdEF6VFI2R01JSDI0ajVwZXMxa1Z6dktPLUoyOVUzbzRzTk1KZmVVWGJPMDVjYWpIYWJBb0ctRXdlbUVINVE2aE5pNld1ajlkSG1PTlhOempUSk1SckUyZlZVcEwtX2l3SlBfM3h6ZFlMNTNXeUHSAfsBQVVfeXFMT0pTQ29KN2dXdmlMZklUMlkwNFM1dXZVY0twMzJqREcxSjVyVmdRaWlFZ0JSalVlYzhZS2RzTGNzTlpmRlBSYmZXaklnbVpLdTQ3Nmx5SGUtRGtCVHVTcWh6Vl9yV25TNWhfbm01MU4yNG1fa2xHWnU4eGJvczJsSkwyOWRVdkE4TUl5dHlpM3I3WEszQU9WVEtHdW5hMWQ3VS1UNlNwdWJVc1pORnNmcEtHdWE5Wl9nZGJsdlFBZmFmeWYzSVJPQUNKWlVYSkpCMVQwVnZMTlFRWVNXY1JiM1llT2hlUXZoOEloZ1BJUG1ldXF5d0w2REVNTkE?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>APPSC Assistant Professor recruitment 2026: Apply online for 145 posts, direct link here - The Times of India</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMi9gFBVV95cUxQOFZOb2U1bFNkOFQ5aVF4cnc0X0pOWmtHRk1OQmhiTjdtbVQxOXhMNmJONXF3bWZLMEpMc0xEeFlEVnl5dFg2WHVLRHh6bFhGLTNlalRQVUpGanhCSWgxMExMbm9PeG9YVHJpREFXTW5WWGNJU3I0bndPOXVwTTA1dDN2T25taVpHdEF6VFI2R01JSDI0ajVwZXMxa1Z6dktPLUoyOVUzbzRzTk1KZmVVWGJPMDVjYWpIYWJBb0ctRXdlbUVINVE2aE5pNld1ajlkSG1PTlhOempUSk1SckUyZlZVcEwtX2l3SlBfM3h6ZFlMNTNXeUHSAfsBQVVfeXFMT0pTQ29KN2dXdmlMZklUMlkwNFM1dXZVY0twMzJqREcxSjVyVmdRaWlFZ0JSalVlYzhZS2RzTGNzTlpmRlBSYmZXaklnbVpLdTQ3Nmx5SGUtRGtCVHVTcWh6Vl9yV25TNWhfbm01MU4yNG1fa2xHWnU4eGJvczJsSkwyOWRVdkE4TUl5dHlpM3I3WEszQU9WVEtHdW5hMWQ3VS1UNlNwdWJVc1pORnNmcEtHdWE5Wl9nZGJsdlFBZmFmeWYzSVJPQUNKWlVYSkpCMVQwVnZMTlFRWVNXY1JiM1llT2hlUXZoOEloZ1BJUG1ldXF5d0w2REVNTkE?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMitgFBVV95cUxON25RVUp0LXJLTlk4S2IwLUUwTmxJMmRkM21ETXJJSENlRjR4M3JDQXZEUEFRQ0I0RjQ4alVrZ05yUmhqek1fa0taUlBXZVdiM1BreTJUdHRjRTF5OWZhdHlTZVR1d2IzX1JpTjlOVkNnUE9raXRGODZERDhhX2F6anJua096bUlzV3gxMWR1UG9PelFodF92d3NrUnlEZUY0aVpHYlE5ajV1S2NrUlpkaWFzT0VnQQ?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>United International University is looking for lecturer candidates - The Financial Express</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxON25RVUp0LXJLTlk4S2IwLUUwTmxJMmRkM21ETXJJSENlRjR4M3JDQXZEUEFRQ0I0RjQ4alVrZ05yUmhqek1fa0taUlBXZVdiM1BreTJUdHRjRTF5OWZhdHlTZVR1d2IzX1JpTjlOVkNnUE9raXRGODZERDhhX2F6anJua096bUlzV3gxMWR1UG9PelFodF92d3NrUnlEZUY0aVpHYlE5ajV1S2NrUlpkaWFzT0VnQQ?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi5gFBVV95cUxNNkpBbW84S1BZT2l5VTVYNzl5THlsNWZXWHJtX1dydUwtZVhKWFN2dW9SMERDWHpYTXRBeE1tNF8xTUVXUG1PNlcyS3FsZ29HX0RRV1B2ZnIyRmZPUHN3NVFvbGhkLVJfUHllbFNTek1GZ3VrWTY3Y0x2b25BcThfS0wtVU9vb3JMeFFJd1dDNjFsYmlYSDNqT0N6MmQxb0RwT2RHRERyNHFrbzJTM1phbHNGbXVUOHRGVzJQN1lHNnQ5czItRzBLRTFTLW9GU2hUQmVWdF8yNGh1N1FZSlNrVU1pdjYydw?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>The University of Asia Pacific is seeking Lecturer to join their Civil Engineering department - The Financial Express</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMi5gFBVV95cUxNNkpBbW84S1BZT2l5VTVYNzl5THlsNWZXWHJtX1dydUwtZVhKWFN2dW9SMERDWHpYTXRBeE1tNF8xTUVXUG1PNlcyS3FsZ29HX0RRV1B2ZnIyRmZPUHN3NVFvbGhkLVJfUHllbFNTek1GZ3VrWTY3Y0x2b25BcThfS0wtVU9vb3JMeFFJd1dDNjFsYmlYSDNqT0N6MmQxb0RwT2RHRERyNHFrbzJTM1phbHNGbXVUOHRGVzJQN1lHNnQ5czItRzBLRTFTLW9GU2hUQmVWdF8yNGh1N1FZSlNrVU1pdjYydw?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi9AFBVV95cUxQckFhcGxWdkhsa2FqMmdYQVRlMVg0cGk3SV9YZjJ0WGNWeW00S0x0aDdLbWlpcFp5ZHZ0bFVObXhaQ193dTBkb0tuYWxSQ2t3c2hlLVRSVm8zQUd1SFBWQ2Vad1dFMW9ILWk5R096RWpWb2tzcDZfMkpWWHBPQmhuaVdpNFlPcFJTREhWR2Q1SmdjODR5YXpLVXFvRHM2UFlwN3JUM2p1Mk9CNTg3ZHBJcU56OG5zQmVlMVp5TFVzcWlxc3ZseHhJQzFNcTg5b3ZGdFJRYUhCMklHQ3ZwY2FjUUFZM2ZxYTI2Q1RVXzZ2U3N3bkZo0gH6AUFVX3lxTE5nTENuSUEzRmhfb09sbF9RV0plZ1R2NFB3aU5UbkpqbjB0czFYTGRMLXdkaGNrOEZUcDNWdk5NejU4RDRKODFMUVNVaDJpRmVMTUp5cUlIUmNadWc5cjVQLWM4U3FPeUxDUVhvT2oxMGlPWmhYYnh2X3hFMV93NGIxZzVFRldQQTFpR3pDb18tMDdmcEtiRWhMLW4zWjJjMVJMeVhPZTVNb3ZzRmR4WGhiSmRXdUhPcTZYWUdTdHZtS2xnVUlxT3h3WXc2TFp4YU9LSmhoUmpLRE9WY1pCdDZLWnpPNXdOd1dLZGdWR09LMHQ3R0VNVW8tamc?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>JPSC Polytechnic Lecturer Notification 2026 Out, 349 Vacancy, PDF Download, Apply Online - The Times of India</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMi9AFBVV95cUxQckFhcGxWdkhsa2FqMmdYQVRlMVg0cGk3SV9YZjJ0WGNWeW00S0x0aDdLbWlpcFp5ZHZ0bFVObXhaQ193dTBkb0tuYWxSQ2t3c2hlLVRSVm8zQUd1SFBWQ2Vad1dFMW9ILWk5R096RWpWb2tzcDZfMkpWWHBPQmhuaVdpNFlPcFJTREhWR2Q1SmdjODR5YXpLVXFvRHM2UFlwN3JUM2p1Mk9CNTg3ZHBJcU56OG5zQmVlMVp5TFVzcWlxc3ZseHhJQzFNcTg5b3ZGdFJRYUhCMklHQ3ZwY2FjUUFZM2ZxYTI2Q1RVXzZ2U3N3bkZo0gH6AUFVX3lxTE5nTENuSUEzRmhfb09sbF9RV0plZ1R2NFB3aU5UbkpqbjB0czFYTGRMLXdkaGNrOEZUcDNWdk5NejU4RDRKODFMUVNVaDJpRmVMTUp5cUlIUmNadWc5cjVQLWM4U3FPeUxDUVhvT2oxMGlPWmhYYnh2X3hFMV93NGIxZzVFRldQQTFpR3pDb18tMDdmcEtiRWhMLW4zWjJjMVJMeVhPZTVNb3ZzRmR4WGhiSmRXdUhPcTZYWUdTdHZtS2xnVUlxT3h3WXc2TFp4YU9LSmhoUmpLRE9WY1pCdDZLWnpPNXdOd1dLZGdWR09LMHQ3R0VNVW8tamc?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiygFBVV95cUxNSjBwX0ZqYU1wVXh5VThITDhFUUxDZ0ZVbXozSEt6dC1iUVN5ZDQ4S2o3UGJhMkxOd3BUUnduZm82dm9OQUdBRlZEeHhmbWdoZEtwVGNCQ1JHMXpjS3diOHdiWHFHdVAwTGpjTlhoWjI2V1hZVFZFXzFkbjA3WUxxUDd6WERjUXJ2bEFuaFdpX0U3aGh4T19jUTJCZzlkejFzT0J6ZjlqZVhaYXBPWm56cGd5ajFYYXVKLXpvMS1jMXYyXzlpeVdFWXdR0gHPAUFVX3lxTFBTX3hDekRWWnJuZ2wwVloyUzZoOGJoTFQ5OEhfdk9RVF9vYUphS05ZNjdObEthcGMtd3RuSTVaZ0tnaTFGbFJEQVl2bkZUd1NzbUoyb0JENkVsM1JhTUFfMzV3YXN5c3hFclM1bUNFZkVMbnpxUUdvX0Y2aVFXSmRZUklvQ0QwQnl2azZUdUJMN2NfcllISk1DSjAxcGVCZzhkUzlJbjA1YWV6N1hpZ2doeFphSmZKZVRSNTBkTUYyazNhT1FJbHdRcGFyNmhISQ?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Chennai's Anna University to ban over 2,000 faculty members - The Times of India</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMiygFBVV95cUxNSjBwX0ZqYU1wVXh5VThITDhFUUxDZ0ZVbXozSEt6dC1iUVN5ZDQ4S2o3UGJhMkxOd3BUUnduZm82dm9OQUdBRlZEeHhmbWdoZEtwVGNCQ1JHMXpjS3diOHdiWHFHdVAwTGpjTlhoWjI2V1hZVFZFXzFkbjA3WUxxUDd6WERjUXJ2bEFuaFdpX0U3aGh4T19jUTJCZzlkejFzT0J6ZjlqZVhaYXBPWm56cGd5ajFYYXVKLXpvMS1jMXYyXzlpeVdFWXdR0gHPAUFVX3lxTFBTX3hDekRWWnJuZ2wwVloyUzZoOGJoTFQ5OEhfdk9RVF9vYUphS05ZNjdObEthcGMtd3RuSTVaZ0tnaTFGbFJEQVl2bkZUd1NzbUoyb0JENkVsM1JhTUFfMzV3YXN5c3hFclM1bUNFZkVMbnpxUUdvX0Y2aVFXSmRZUklvQ0QwQnl2azZUdUJMN2NfcllISk1DSjAxcGVCZzhkUzlJbjA1YWV6N1hpZ2doeFphSmZKZVRSNTBkTUYyazNhT1FJbHdRcGFyNmhISQ?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi0wFBVV95cUxPTWxIOGM4YTkydjVqRkg4dlJYNnFPMEIwNmJtSUNmR3NnT3VueDdxcDQzTFRobm9oZlpFVVlmWmwzN3RaN2x2MXpWa0hCTFZrNE54RlZjZ3VUVUQ0SG5UbjlkdGFYdk9Yak1LRDRITmFMSUNrajRLdVp2dkk4X1lZaF9jX2pxQXZXSGtYbGVQaGNlSnQxUXpxSjJickxRUE5OZTFpX2tTbUY5TC1wbGVKVk9MVWNoQlBnNmIyNmwyMHo1ME9BZFB2RFpmWUJFSVBwU2Iw?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Multiple faculty positions open at National University of Bangladesh - The Financial Express</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMi0wFBVV95cUxPTWxIOGM4YTkydjVqRkg4dlJYNnFPMEIwNmJtSUNmR3NnT3VueDdxcDQzTFRobm9oZlpFVVlmWmwzN3RaN2x2MXpWa0hCTFZrNE54RlZjZ3VUVUQ0SG5UbjlkdGFYdk9Yak1LRDRITmFMSUNrajRLdVp2dkk4X1lZaF9jX2pxQXZXSGtYbGVQaGNlSnQxUXpxSjJickxRUE5OZTFpX2tTbUY5TC1wbGVKVk9MVWNoQlBnNmIyNmwyMHo1ME9BZFB2RFpmWUJFSVBwU2Iw?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMihAFBVV95cUxPTk1CVHF5TlhTZFlVaURydVk2RGM1R2JoN0w0a05Pc1Jmby1QbmNvU2t1QWMwaUl3SDNURnF2R20zTlVfMjVEc0NnczhCd2ZxdW52Tk1ZT29vV2ZUaTR0cEcyWVB4U2VfSndBbkxRelAwYzQ4UElJeHpWSGY0M2xWMDRQRTc?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Campus welcomes new faculty members - News at IU</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxPTk1CVHF5TlhTZFlVaURydVk2RGM1R2JoN0w0a05Pc1Jmby1QbmNvU2t1QWMwaUl3SDNURnF2R20zTlVfMjVEc0NnczhCd2ZxdW52Tk1ZT29vV2ZUaTR0cEcyWVB4U2VfSndBbkxRelAwYzQ4UElJeHpWSGY0M2xWMDRQRTc?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiqgFBVV95cUxPZXZKQ0trT2NBcFVGajNQcFdGUi1YTDZQNmVwYmpUVDNYcGR1dkk3QkV4d0ZtTnpVQjNMVGE1Y2hqaFZCc01jNUxuMGF0OUpvalpZYl9DR0hBNWpFRGYwMEhnamZXWDRPQnZkTWVEYjRwa0otWE50enNaeHhvakVyaWE0RFRyRW4wakJMQVZ2Wnd2Yi1OMWl2cER1Z3BnQ0d6NlZwZnBQb1hkdw?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Five New Faculty Members Join the Ranks at the Halıcıoğlu Data Science Institute - UC San Diego Today</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMiqgFBVV95cUxPZXZKQ0trT2NBcFVGajNQcFdGUi1YTDZQNmVwYmpUVDNYcGR1dkk3QkV4d0ZtTnpVQjNMVGE1Y2hqaFZCc01jNUxuMGF0OUpvalpZYl9DR0hBNWpFRGYwMEhnamZXWDRPQnZkTWVEYjRwa0otWE50enNaeHhvakVyaWE0RFRyRW4wakJMQVZ2Wnd2Yi1OMWl2cER1Z3BnQ0d6NlZwZnBQb1hkdw?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMikgFBVV95cUxOeWVibks1N29uQUJuajdVeEM4RHVEQXpqbnRkWEhGWjVaZXBfQ0xaZE5JazVvcW5ValN0QkJqdzV0QWZvb2VaZW0wSFhrS0xTdGFSZVI5M0NJYWFnZkxUSVAyNGlzdS1JQ1dTbGpuUmZuMnQ3U1dnLUpfNzhoUzhNQ1pZd2Z4U0dwLXp1dFNvaGdYZw?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Ten New Tenure-Track Faculty Members Join Trinity College - trincoll.edu</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxOeWVibks1N29uQUJuajdVeEM4RHVEQXpqbnRkWEhGWjVaZXBfQ0xaZE5JazVvcW5ValN0QkJqdzV0QWZvb2VaZW0wSFhrS0xTdGFSZVI5M0NJYWFnZkxUSVAyNGlzdS1JQ1dTbGpuUmZuMnQ3U1dnLUpfNzhoUzhNQ1pZd2Z4U0dwLXp1dFNvaGdYZw?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMipgFBVV95cUxOekhaTUhnYjYxczZaWWdWLWFOQXVZcUVjMG1ZOURaeW82S0F2bDQ4aldUOElPU0VyaGQtc1d3ZlZab25ZMk5SRWJCM3AzYnNQSmZGWGdvM210WmFTQklBZGF6aHpNcmNqTk5xbFRjSDN0VUE0aHZ1b0ZGZWFuOUZPV0xWbkdvQ01oeHNtV01JUHZOcWJ2aWgzM1ZyeDRiUkhIVmlZRFJB?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>JPSC Lecturer Recruitment 2026 - Apply Online for 349 Posts - FreeJobAlert.Com</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxOekhaTUhnYjYxczZaWWdWLWFOQXVZcUVjMG1ZOURaeW82S0F2bDQ4aldUOElPU0VyaGQtc1d3ZlZab25ZMk5SRWJCM3AzYnNQSmZGWGdvM210WmFTQklBZGF6aHpNcmNqTk5xbFRjSDN0VUE0aHZ1b0ZGZWFuOUZPV0xWbkdvQ01oeHNtV01JUHZOcWJ2aWgzM1ZyeDRiUkhIVmlZRFJB?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMigAFBVV95cUxNakRSdDVYdGlYdXFlWUFRSG9PM2wwTlg3T1ZVdUd2ZXphdUpsWEVGd2Z0WElvdEJwaFBHSjZyTzh1NDA1dTJVTXpiM2dhMXdBMjAxNjd2V05sTmVYV3NJbXo4UURORnprazFROFdwRE84cHRDcHVLTEJmcC02a1JINw?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>UPPSC Polytechnic Lecturer Exam Date 2026 Out for 513 Vacancies, Exam Pattern - Career Power</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxNakRSdDVYdGlYdXFlWUFRSG9PM2wwTlg3T1ZVdUd2ZXphdUpsWEVGd2Z0WElvdEJwaFBHSjZyTzh1NDA1dTJVTXpiM2dhMXdBMjAxNjd2V05sTmVYV3NJbXo4UURORnprazFROFdwRE84cHRDcHVLTEJmcC02a1JINw?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5','_blank')">
-      <span class="badge" style="background:#2980b9">Google News</span>
-      <h3>Computer Science welcomes 17 new faculty members - Siebel School of Computing and Data Science</h3>
-      <p class="inst">🏫 See link</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://vub.edu.bd/computer-science-information-technology-csit/','_blank')">
-      <span class="badge" style="background:#2980b9">Victoria University</span>
-      <h3>Dept. of Computer Science & Information Technology (CSIT)</h3>
-      <p class="inst">🏫 Victoria University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://vub.edu.bd/computer-science-information-technology-csit/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://vub.edu.bd/computer-science-engineering-cse/','_blank')">
-      <span class="badge" style="background:#2980b9">Victoria University</span>
-      <h3>B.Sc in CSE (Regular & Evening)</h3>
-      <p class="inst">🏫 Victoria University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://vub.edu.bd/computer-science-engineering-cse/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://vub.edu.bd/computer-science-engineering-cse/','_blank')">
-      <span class="badge" style="background:#2980b9">Victoria University</span>
-      <h3>Dept. of Computer science & Engineering (CSE)</h3>
-      <p class="inst">🏫 Victoria University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://vub.edu.bd/computer-science-engineering-cse/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://vub.edu.bd/career/#','_blank')">
-      <span class="badge" style="background:#2980b9">Victoria University</span>
-      <h3>Faculty of Science</h3>
-      <p class="inst">🏫 Victoria University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://vub.edu.bd/career/#" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('http://3','_blank')">
-      <span class="badge" style="background:#2980b9">Victoria University</span>
-      <h3>Faculty of Arts & Humanities</h3>
-      <p class="inst">🏫 Victoria University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="http://3" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://vub.edu.bd/career/#','_blank')">
-      <span class="badge" style="background:#2980b9">Victoria University</span>
-      <h3>Faculty of Business & Management</h3>
-      <p class="inst">🏫 Victoria University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://vub.edu.bd/career/#" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uttara.ac.bd/visiting-faculty-members/','_blank')">
-      <span class="badge" style="background:#2980b9">Uttara University</span>
-      <h3>Visiting Faculty Members</h3>
-      <p class="inst">🏫 Uttara University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uttara.ac.bd/visiting-faculty-members/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uttara.ac.bd/faculty/','_blank')">
-      <span class="badge" style="background:#2980b9">Uttara University</span>
-      <h3>Faculty Members</h3>
-      <p class="inst">🏫 Uttara University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uttara.ac.bd/faculty/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uttara.ac.bd/faculty-hr-office/','_blank')">
-      <span class="badge" style="background:#2980b9">Uttara University</span>
-      <h3>Faculty & HR Office</h3>
-      <p class="inst">🏫 Uttara University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uttara.ac.bd/faculty-hr-office/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uttara.ac.bd/department-of-cse','_blank')">
-      <span class="badge" style="background:#2980b9">Uttara University</span>
-      <h3>Department of Computer Science and Engineering</h3>
-      <p class="inst">🏫 Uttara University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uttara.ac.bd/department-of-cse" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://primeasia.edu.bd/primeasia-university-faculty-honored-by-sofen-for-outstanding-contribution-to-bangladeshs-education-sector/','_blank')">
-      <span class="badge" style="background:#2980b9">Primeasia Univ</span>
-      <h3>Primeasia University Faculty Honored by SOFEN for Outstanding Contribution to Bangladesh’s Education Sector</h3>
-      <p class="inst">🏫 Primeasia Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://primeasia.edu.bd/primeasia-university-faculty-honored-by-sofen-for-outstanding-contribution-to-bangladeshs-education-sector/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://primeasia.edu.bd/others/career/faculty-position-opening/','_blank')">
-      <span class="badge" style="background:#2980b9">Primeasia Univ</span>
-      <h3>Faculty Position Opening</h3>
-      <p class="inst">🏫 Primeasia Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://primeasia.edu.bd/others/career/faculty-position-opening/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://primeasia.edu.bd/cse/','_blank')">
-      <span class="badge" style="background:#2980b9">Primeasia Univ</span>
-      <h3>B.Sc in Computer Science & Engineering (CSE)</h3>
-      <p class="inst">🏫 Primeasia Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://primeasia.edu.bd/cse/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://primeasia.edu.bd/academic/academic-committee/faculty-recruitment-committee/','_blank')">
-      <span class="badge" style="background:#2980b9">Primeasia Univ</span>
-      <h3>Faculty Recruitment Committee</h3>
-      <p class="inst">🏫 Primeasia Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://primeasia.edu.bd/academic/academic-committee/faculty-recruitment-committee/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://primeasia.edu.bd/administration/office-of-it/','_blank')">
-      <span class="badge" style="background:#2980b9">Primeasia Univ</span>
-      <h3>Information Technology (IT)</h3>
-      <p class="inst">🏫 Primeasia Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://primeasia.edu.bd/administration/office-of-it/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://manarat.ac.bd/all-faculty-members/','_blank')">
-      <span class="badge" style="background:#2980b9">Manarat Intl Univ</span>
-      <h3>All Faculty Members</h3>
-      <p class="inst">🏫 Manarat Intl Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://manarat.ac.bd/all-faculty-members/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('http://cse.manarat.ac.bd/','_blank')">
-      <span class="badge" style="background:#2980b9">Manarat Intl Univ</span>
-      <h3>Department of Computer Science & Engineering</h3>
-      <p class="inst">🏫 Manarat Intl Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="http://cse.manarat.ac.bd/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://iubat.edu/visiting-faculty/','_blank')">
-      <span class="badge" style="background:#2980b9">IUBAT</span>
-      <h3>Visiting Faculty</h3>
-      <p class="inst">🏫 IUBAT</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://iubat.edu/visiting-faculty/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Science &
+  <p class="cinst">&#127979; Dhaka University</p>
+  <a class="view-btn" href="https://www.du.ac.bd/faculty_member" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi3gFBVV95cUxPTDhrMHlOVl82VUdYa01NaVF3U3hOWWhDZi1RblBqUVVOWVBsMTdYNmhsYV9nRFlyRXhrVlV3ZzBnWlFoNE1DRVdxWDk4TG1lVWJjNVJHWnlzT3JRUFRiSzhrVmx4YVk3bF9sUkhHTG1RUHFwVVh2bmxMZUhvLXl5dFphTUhPOF9BZG9oWmhaamtFdjB6RU9PRUZSdE4td0Y3QlpUcHczcU9salgxOEd1V3BydzdPSllyeEc1eGlFY2RJR2Z0dWVXUmtOeG0tZGV1YWVaQ2xRN2U5V2xrSkE?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Lakhimpur Girls College Recruitment 2021- 1 Assistant Professor Vacancy, Job Openings - The Sentinel - of this Land, for its People</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMi3gFBVV95cUxPTDhrMHlOVl82VUdYa01NaVF3U3hOWWhDZi1RblBqUVVOWVBsMTdYNmhsYV9nRFlyRXhrVlV3ZzBnWlFoNE1DRVdxWDk4TG1lVWJjNVJHWnlzT3JRUFRiSzhrVmx4YVk3bF9sUkhHTG1RUHFwVVh2bmxMZUhvLXl5dFphTUhPOF9BZG9oWmhaamtFdjB6RU9PRUZSdE4td0Y3QlpUcHczcU9salgxOEd1V3BydzdPSllyeEc1eGlFY2RJR2Z0dWVXUmtOeG0tZGV1YWVaQ2xRN2U5V2xrSkE?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiqAJBVV95cUxNcnhjemN1eXp0ZnV2dmR4NmxuLXJwa1NVN2F3Q3FtYXQyTE1WV2tjV3pJNnBWLVJPZ040ZTdCMEUxeHo2YW02dVE2c05ya3V6TjBkeml1SHhzSDJ1MTZNOGRHb0s0WFlhM2I2LW8zalNQNjBrMDROZjJRRm9iWG5WNGNmVmFhRlpfdDlabnRZUUlUYUk0TXZna3ZrVGR2cVhROUlobVlvT09GSkFEOEhMXzRFSzJlOVV0dV9SVVZteGNhQWxaY2R3SHpBeGJqXzFzaXI0Ym1pWEMyT2xDbVZBWXE0eWl4eXQxemMxMHVPaVBJYjVQTWJvVURWaGZQd1ctNWJrb1E2V29iYnQycnRSbEFpbkVEbFFBTVRHMmRiZ0NpdVlWSDkzTdIBrgJBVV95cUxNdEFselhsbXBXcm9BcmNKMzd6MXZYU2toOVRCVkd2WmlBX1E0a0hwbnJKUnR4X1BUVzhPQVkzcVozTXF1Vzk2Ym5vc2w5Q2RGNHRKa3BkZXNFVllLUzdLSUlDQ0VpS1lBeFpMSVBWa2xjbGZJWXM4ZVVDb0J4cndrRWYtdHlqS2hJTzRDZFlCM3MxRU9OejJvaU1Ncm82LU94TFZDWWRSSmE2U2trbHZkeGZVZ2hxQTY1VHBtTkt5d1AyX0JUNURFcWRtWFhkcWVSU3R2Nk4wLVF5V1pwMVpMemNZaUtiOW0tWF9KclVhMDhHZlVYT0hoM3A5VGdycTh2eXEwcGVyR3hkcWhHTnpzbktjQVgxdkJ1S2F1RkdkeVh1OUJURzdNR0JVNDN6dw?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">MPPSC Assistant Professor Recruitment 2026: Notification out for 949 vacancies; check dates, eligibility, - The Times of India</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMiqAJBVV95cUxNcnhjemN1eXp0ZnV2dmR4NmxuLXJwa1NVN2F3Q3FtYXQyTE1WV2tjV3pJNnBWLVJPZ040ZTdCMEUxeHo2YW02dVE2c05ya3V6TjBkeml1SHhzSDJ1MTZNOGRHb0s0WFlhM2I2LW8zalNQNjBrMDROZjJRRm9iWG5WNGNmVmFhRlpfdDlabnRZUUlUYUk0TXZna3ZrVGR2cVhROUlobVlvT09GSkFEOEhMXzRFSzJlOVV0dV9SVVZteGNhQWxaY2R3SHpBeGJqXzFzaXI0Ym1pWEMyT2xDbVZBWXE0eWl4eXQxemMxMHVPaVBJYjVQTWJvVURWaGZQd1ctNWJrb1E2V29iYnQycnRSbEFpbkVEbFFBTVRHMmRiZ0NpdVlWSDkzTdIBrgJBVV95cUxNdEFselhsbXBXcm9BcmNKMzd6MXZYU2toOVRCVkd2WmlBX1E0a0hwbnJKUnR4X1BUVzhPQVkzcVozTXF1Vzk2Ym5vc2w5Q2RGNHRKa3BkZXNFVllLUzdLSUlDQ0VpS1lBeFpMSVBWa2xjbGZJWXM4ZVVDb0J4cndrRWYtdHlqS2hJTzRDZFlCM3MxRU9OejJvaU1Ncm82LU94TFZDWWRSSmE2U2trbHZkeGZVZ2hxQTY1VHBtTkt5d1AyX0JUNURFcWRtWFhkcWVSU3R2Nk4wLVF5V1pwMVpMemNZaUtiOW0tWF9KclVhMDhHZlVYT0hoM3A5VGdycTh2eXEwcGVyR3hkcWhHTnpzbktjQVgxdkJ1S2F1RkdkeVh1OUJURzdNR0JVNDN6dw?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiV0FVX3lxTFBpR3h3T2lGSHo2R1UxQ3JqckNNcmhYU0VfbDZWQlRGdTB2R2dnT0NDRjAwN0RZbWV3RFVsVG1fdGZ0aDR6bjdJSmcyN0p6bUZKMVBmekFiOA?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Govt abolishes senior lecturer post in updated MPO policy - bdnews24.com</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMiV0FVX3lxTFBpR3h3T2lGSHo2R1UxQ3JqckNNcmhYU0VfbDZWQlRGdTB2R2dnT0NDRjAwN0RZbWV3RFVsVG1fdGZ0aDR6bjdJSmcyN0p6bUZKMVBmekFiOA?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi9gFBVV95cUxQOFZOb2U1bFNkOFQ5aVF4cnc0X0pOWmtHRk1OQmhiTjdtbVQxOXhMNmJONXF3bWZLMEpMc0xEeFlEVnl5dFg2WHVLRHh6bFhGLTNlalRQVUpGanhCSWgxMExMbm9PeG9YVHJpREFXTW5WWGNJU3I0bndPOXVwTTA1dDN2T25taVpHdEF6VFI2R01JSDI0ajVwZXMxa1Z6dktPLUoyOVUzbzRzTk1KZmVVWGJPMDVjYWpIYWJBb0ctRXdlbUVINVE2aE5pNld1ajlkSG1PTlhOempUSk1SckUyZlZVcEwtX2l3SlBfM3h6ZFlMNTNXeUHSAfsBQVVfeXFMT0pTQ29KN2dXdmlMZklUMlkwNFM1dXZVY0twMzJqREcxSjVyVmdRaWlFZ0JSalVlYzhZS2RzTGNzTlpmRlBSYmZXaklnbVpLdTQ3Nmx5SGUtRGtCVHVTcWh6Vl9yV25TNWhfbm01MU4yNG1fa2xHWnU4eGJvczJsSkwyOWRVdkE4TUl5dHlpM3I3WEszQU9WVEtHdW5hMWQ3VS1UNlNwdWJVc1pORnNmcEtHdWE5Wl9nZGJsdlFBZmFmeWYzSVJPQUNKWlVYSkpCMVQwVnZMTlFRWVNXY1JiM1llT2hlUXZoOEloZ1BJUG1ldXF5d0w2REVNTkE?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">APPSC Assistant Professor recruitment 2026: Apply online for 145 posts, direct link here - The Times of India</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMi9gFBVV95cUxQOFZOb2U1bFNkOFQ5aVF4cnc0X0pOWmtHRk1OQmhiTjdtbVQxOXhMNmJONXF3bWZLMEpMc0xEeFlEVnl5dFg2WHVLRHh6bFhGLTNlalRQVUpGanhCSWgxMExMbm9PeG9YVHJpREFXTW5WWGNJU3I0bndPOXVwTTA1dDN2T25taVpHdEF6VFI2R01JSDI0ajVwZXMxa1Z6dktPLUoyOVUzbzRzTk1KZmVVWGJPMDVjYWpIYWJBb0ctRXdlbUVINVE2aE5pNld1ajlkSG1PTlhOempUSk1SckUyZlZVcEwtX2l3SlBfM3h6ZFlMNTNXeUHSAfsBQVVfeXFMT0pTQ29KN2dXdmlMZklUMlkwNFM1dXZVY0twMzJqREcxSjVyVmdRaWlFZ0JSalVlYzhZS2RzTGNzTlpmRlBSYmZXaklnbVpLdTQ3Nmx5SGUtRGtCVHVTcWh6Vl9yV25TNWhfbm01MU4yNG1fa2xHWnU4eGJvczJsSkwyOWRVdkE4TUl5dHlpM3I3WEszQU9WVEtHdW5hMWQ3VS1UNlNwdWJVc1pORnNmcEtHdWE5Wl9nZGJsdlFBZmFmeWYzSVJPQUNKWlVYSkpCMVQwVnZMTlFRWVNXY1JiM1llT2hlUXZoOEloZ1BJUG1ldXF5d0w2REVNTkE?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMitgFBVV95cUxON25RVUp0LXJLTlk4S2IwLUUwTmxJMmRkM21ETXJJSENlRjR4M3JDQXZEUEFRQ0I0RjQ4alVrZ05yUmhqek1fa0taUlBXZVdiM1BreTJUdHRjRTF5OWZhdHlTZVR1d2IzX1JpTjlOVkNnUE9raXRGODZERDhhX2F6anJua096bUlzV3gxMWR1UG9PelFodF92d3NrUnlEZUY0aVpHYlE5ajV1S2NrUlpkaWFzT0VnQQ?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">United International University is looking for lecturer candidates - The Financial Express</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMitgFBVV95cUxON25RVUp0LXJLTlk4S2IwLUUwTmxJMmRkM21ETXJJSENlRjR4M3JDQXZEUEFRQ0I0RjQ4alVrZ05yUmhqek1fa0taUlBXZVdiM1BreTJUdHRjRTF5OWZhdHlTZVR1d2IzX1JpTjlOVkNnUE9raXRGODZERDhhX2F6anJua096bUlzV3gxMWR1UG9PelFodF92d3NrUnlEZUY0aVpHYlE5ajV1S2NrUlpkaWFzT0VnQQ?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi5gFBVV95cUxNNkpBbW84S1BZT2l5VTVYNzl5THlsNWZXWHJtX1dydUwtZVhKWFN2dW9SMERDWHpYTXRBeE1tNF8xTUVXUG1PNlcyS3FsZ29HX0RRV1B2ZnIyRmZPUHN3NVFvbGhkLVJfUHllbFNTek1GZ3VrWTY3Y0x2b25BcThfS0wtVU9vb3JMeFFJd1dDNjFsYmlYSDNqT0N6MmQxb0RwT2RHRERyNHFrbzJTM1phbHNGbXVUOHRGVzJQN1lHNnQ5czItRzBLRTFTLW9GU2hUQmVWdF8yNGh1N1FZSlNrVU1pdjYydw?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">The University of Asia Pacific is seeking Lecturer to join their Civil Engineering department - The Financial Express</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMi5gFBVV95cUxNNkpBbW84S1BZT2l5VTVYNzl5THlsNWZXWHJtX1dydUwtZVhKWFN2dW9SMERDWHpYTXRBeE1tNF8xTUVXUG1PNlcyS3FsZ29HX0RRV1B2ZnIyRmZPUHN3NVFvbGhkLVJfUHllbFNTek1GZ3VrWTY3Y0x2b25BcThfS0wtVU9vb3JMeFFJd1dDNjFsYmlYSDNqT0N6MmQxb0RwT2RHRERyNHFrbzJTM1phbHNGbXVUOHRGVzJQN1lHNnQ5czItRzBLRTFTLW9GU2hUQmVWdF8yNGh1N1FZSlNrVU1pdjYydw?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi9AFBVV95cUxQckFhcGxWdkhsa2FqMmdYQVRlMVg0cGk3SV9YZjJ0WGNWeW00S0x0aDdLbWlpcFp5ZHZ0bFVObXhaQ193dTBkb0tuYWxSQ2t3c2hlLVRSVm8zQUd1SFBWQ2Vad1dFMW9ILWk5R096RWpWb2tzcDZfMkpWWHBPQmhuaVdpNFlPcFJTREhWR2Q1SmdjODR5YXpLVXFvRHM2UFlwN3JUM2p1Mk9CNTg3ZHBJcU56OG5zQmVlMVp5TFVzcWlxc3ZseHhJQzFNcTg5b3ZGdFJRYUhCMklHQ3ZwY2FjUUFZM2ZxYTI2Q1RVXzZ2U3N3bkZo0gH6AUFVX3lxTE5nTENuSUEzRmhfb09sbF9RV0plZ1R2NFB3aU5UbkpqbjB0czFYTGRMLXdkaGNrOEZUcDNWdk5NejU4RDRKODFMUVNVaDJpRmVMTUp5cUlIUmNadWc5cjVQLWM4U3FPeUxDUVhvT2oxMGlPWmhYYnh2X3hFMV93NGIxZzVFRldQQTFpR3pDb18tMDdmcEtiRWhMLW4zWjJjMVJMeVhPZTVNb3ZzRmR4WGhiSmRXdUhPcTZYWUdTdHZtS2xnVUlxT3h3WXc2TFp4YU9LSmhoUmpLRE9WY1pCdDZLWnpPNXdOd1dLZGdWR09LMHQ3R0VNVW8tamc?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">JPSC Polytechnic Lecturer Notification 2026 Out, 349 Vacancy, PDF Download, Apply Online - The Times of India</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMi9AFBVV95cUxQckFhcGxWdkhsa2FqMmdYQVRlMVg0cGk3SV9YZjJ0WGNWeW00S0x0aDdLbWlpcFp5ZHZ0bFVObXhaQ193dTBkb0tuYWxSQ2t3c2hlLVRSVm8zQUd1SFBWQ2Vad1dFMW9ILWk5R096RWpWb2tzcDZfMkpWWHBPQmhuaVdpNFlPcFJTREhWR2Q1SmdjODR5YXpLVXFvRHM2UFlwN3JUM2p1Mk9CNTg3ZHBJcU56OG5zQmVlMVp5TFVzcWlxc3ZseHhJQzFNcTg5b3ZGdFJRYUhCMklHQ3ZwY2FjUUFZM2ZxYTI2Q1RVXzZ2U3N3bkZo0gH6AUFVX3lxTE5nTENuSUEzRmhfb09sbF9RV0plZ1R2NFB3aU5UbkpqbjB0czFYTGRMLXdkaGNrOEZUcDNWdk5NejU4RDRKODFMUVNVaDJpRmVMTUp5cUlIUmNadWc5cjVQLWM4U3FPeUxDUVhvT2oxMGlPWmhYYnh2X3hFMV93NGIxZzVFRldQQTFpR3pDb18tMDdmcEtiRWhMLW4zWjJjMVJMeVhPZTVNb3ZzRmR4WGhiSmRXdUhPcTZYWUdTdHZtS2xnVUlxT3h3WXc2TFp4YU9LSmhoUmpLRE9WY1pCdDZLWnpPNXdOd1dLZGdWR09LMHQ3R0VNVW8tamc?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiygFBVV95cUxNSjBwX0ZqYU1wVXh5VThITDhFUUxDZ0ZVbXozSEt6dC1iUVN5ZDQ4S2o3UGJhMkxOd3BUUnduZm82dm9OQUdBRlZEeHhmbWdoZEtwVGNCQ1JHMXpjS3diOHdiWHFHdVAwTGpjTlhoWjI2V1hZVFZFXzFkbjA3WUxxUDd6WERjUXJ2bEFuaFdpX0U3aGh4T19jUTJCZzlkejFzT0J6ZjlqZVhaYXBPWm56cGd5ajFYYXVKLXpvMS1jMXYyXzlpeVdFWXdR0gHPAUFVX3lxTFBTX3hDekRWWnJuZ2wwVloyUzZoOGJoTFQ5OEhfdk9RVF9vYUphS05ZNjdObEthcGMtd3RuSTVaZ0tnaTFGbFJEQVl2bkZUd1NzbUoyb0JENkVsM1JhTUFfMzV3YXN5c3hFclM1bUNFZkVMbnpxUUdvX0Y2aVFXSmRZUklvQ0QwQnl2azZUdUJMN2NfcllISk1DSjAxcGVCZzhkUzlJbjA1YWV6N1hpZ2doeFphSmZKZVRSNTBkTUYyazNhT1FJbHdRcGFyNmhISQ?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Chennai's Anna University to ban over 2,000 faculty members - The Times of India</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMiygFBVV95cUxNSjBwX0ZqYU1wVXh5VThITDhFUUxDZ0ZVbXozSEt6dC1iUVN5ZDQ4S2o3UGJhMkxOd3BUUnduZm82dm9OQUdBRlZEeHhmbWdoZEtwVGNCQ1JHMXpjS3diOHdiWHFHdVAwTGpjTlhoWjI2V1hZVFZFXzFkbjA3WUxxUDd6WERjUXJ2bEFuaFdpX0U3aGh4T19jUTJCZzlkejFzT0J6ZjlqZVhaYXBPWm56cGd5ajFYYXVKLXpvMS1jMXYyXzlpeVdFWXdR0gHPAUFVX3lxTFBTX3hDekRWWnJuZ2wwVloyUzZoOGJoTFQ5OEhfdk9RVF9vYUphS05ZNjdObEthcGMtd3RuSTVaZ0tnaTFGbFJEQVl2bkZUd1NzbUoyb0JENkVsM1JhTUFfMzV3YXN5c3hFclM1bUNFZkVMbnpxUUdvX0Y2aVFXSmRZUklvQ0QwQnl2azZUdUJMN2NfcllISk1DSjAxcGVCZzhkUzlJbjA1YWV6N1hpZ2doeFphSmZKZVRSNTBkTUYyazNhT1FJbHdRcGFyNmhISQ?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMi0wFBVV95cUxPTWxIOGM4YTkydjVqRkg4dlJYNnFPMEIwNmJtSUNmR3NnT3VueDdxcDQzTFRobm9oZlpFVVlmWmwzN3RaN2x2MXpWa0hCTFZrNE54RlZjZ3VUVUQ0SG5UbjlkdGFYdk9Yak1LRDRITmFMSUNrajRLdVp2dkk4X1lZaF9jX2pxQXZXSGtYbGVQaGNlSnQxUXpxSjJickxRUE5OZTFpX2tTbUY5TC1wbGVKVk9MVWNoQlBnNmIyNmwyMHo1ME9BZFB2RFpmWUJFSVBwU2Iw?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Multiple faculty positions open at National University of Bangladesh - The Financial Express</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMi0wFBVV95cUxPTWxIOGM4YTkydjVqRkg4dlJYNnFPMEIwNmJtSUNmR3NnT3VueDdxcDQzTFRobm9oZlpFVVlmWmwzN3RaN2x2MXpWa0hCTFZrNE54RlZjZ3VUVUQ0SG5UbjlkdGFYdk9Yak1LRDRITmFMSUNrajRLdVp2dkk4X1lZaF9jX2pxQXZXSGtYbGVQaGNlSnQxUXpxSjJickxRUE5OZTFpX2tTbUY5TC1wbGVKVk9MVWNoQlBnNmIyNmwyMHo1ME9BZFB2RFpmWUJFSVBwU2Iw?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMihAFBVV95cUxPTk1CVHF5TlhTZFlVaURydVk2RGM1R2JoN0w0a05Pc1Jmby1QbmNvU2t1QWMwaUl3SDNURnF2R20zTlVfMjVEc0NnczhCd2ZxdW52Tk1ZT29vV2ZUaTR0cEcyWVB4U2VfSndBbkxRelAwYzQ4UElJeHpWSGY0M2xWMDRQRTc?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Campus welcomes new faculty members - News at IU</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMihAFBVV95cUxPTk1CVHF5TlhTZFlVaURydVk2RGM1R2JoN0w0a05Pc1Jmby1QbmNvU2t1QWMwaUl3SDNURnF2R20zTlVfMjVEc0NnczhCd2ZxdW52Tk1ZT29vV2ZUaTR0cEcyWVB4U2VfSndBbkxRelAwYzQ4UElJeHpWSGY0M2xWMDRQRTc?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiqgFBVV95cUxPZXZKQ0trT2NBcFVGajNQcFdGUi1YTDZQNmVwYmpUVDNYcGR1dkk3QkV4d0ZtTnpVQjNMVGE1Y2hqaFZCc01jNUxuMGF0OUpvalpZYl9DR0hBNWpFRGYwMEhnamZXWDRPQnZkTWVEYjRwa0otWE50enNaeHhvakVyaWE0RFRyRW4wakJMQVZ2Wnd2Yi1OMWl2cER1Z3BnQ0d6NlZwZnBQb1hkdw?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Five New Faculty Members Join the Ranks at the Halıcıoğlu Data Science Institute - UC San Diego Today</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMiqgFBVV95cUxPZXZKQ0trT2NBcFVGajNQcFdGUi1YTDZQNmVwYmpUVDNYcGR1dkk3QkV4d0ZtTnpVQjNMVGE1Y2hqaFZCc01jNUxuMGF0OUpvalpZYl9DR0hBNWpFRGYwMEhnamZXWDRPQnZkTWVEYjRwa0otWE50enNaeHhvakVyaWE0RFRyRW4wakJMQVZ2Wnd2Yi1OMWl2cER1Z3BnQ0d6NlZwZnBQb1hkdw?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMikgFBVV95cUxOeWVibks1N29uQUJuajdVeEM4RHVEQXpqbnRkWEhGWjVaZXBfQ0xaZE5JazVvcW5ValN0QkJqdzV0QWZvb2VaZW0wSFhrS0xTdGFSZVI5M0NJYWFnZkxUSVAyNGlzdS1JQ1dTbGpuUmZuMnQ3U1dnLUpfNzhoUzhNQ1pZd2Z4U0dwLXp1dFNvaGdYZw?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Ten New Tenure-Track Faculty Members Join Trinity College - trincoll.edu</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMikgFBVV95cUxOeWVibks1N29uQUJuajdVeEM4RHVEQXpqbnRkWEhGWjVaZXBfQ0xaZE5JazVvcW5ValN0QkJqdzV0QWZvb2VaZW0wSFhrS0xTdGFSZVI5M0NJYWFnZkxUSVAyNGlzdS1JQ1dTbGpuUmZuMnQ3U1dnLUpfNzhoUzhNQ1pZd2Z4U0dwLXp1dFNvaGdYZw?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMipgFBVV95cUxOekhaTUhnYjYxczZaWWdWLWFOQXVZcUVjMG1ZOURaeW82S0F2bDQ4aldUOElPU0VyaGQtc1d3ZlZab25ZMk5SRWJCM3AzYnNQSmZGWGdvM210WmFTQklBZGF6aHpNcmNqTk5xbFRjSDN0VUE0aHZ1b0ZGZWFuOUZPV0xWbkdvQ01oeHNtV01JUHZOcWJ2aWgzM1ZyeDRiUkhIVmlZRFJB?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">JPSC Lecturer Recruitment 2026 - Apply Online for 349 Posts - FreeJobAlert.Com</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMipgFBVV95cUxOekhaTUhnYjYxczZaWWdWLWFOQXVZcUVjMG1ZOURaeW82S0F2bDQ4aldUOElPU0VyaGQtc1d3ZlZab25ZMk5SRWJCM3AzYnNQSmZGWGdvM210WmFTQklBZGF6aHpNcmNqTk5xbFRjSDN0VUE0aHZ1b0ZGZWFuOUZPV0xWbkdvQ01oeHNtV01JUHZOcWJ2aWgzM1ZyeDRiUkhIVmlZRFJB?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMigAFBVV95cUxNakRSdDVYdGlYdXFlWUFRSG9PM2wwTlg3T1ZVdUd2ZXphdUpsWEVGd2Z0WElvdEJwaFBHSjZyTzh1NDA1dTJVTXpiM2dhMXdBMjAxNjd2V05sTmVYV3NJbXo4UURORnprazFROFdwRE84cHRDcHVLTEJmcC02a1JINw?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">UPPSC Polytechnic Lecturer Exam Date 2026 Out for 513 Vacancies, Exam Pattern - Career Power</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMigAFBVV95cUxNakRSdDVYdGlYdXFlWUFRSG9PM2wwTlg3T1ZVdUd2ZXphdUpsWEVGd2Z0WElvdEJwaFBHSjZyTzh1NDA1dTJVTXpiM2dhMXdBMjAxNjd2V05sTmVYV3NJbXo4UURORnprazFROFdwRE84cHRDcHVLTEJmcC02a1JINw?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#db2777">Google News</span>
+    <span class="ago">3h ago</span>
+  </div>
+  <h3 class="ctitle">Computer Science welcomes 17 new faculty members - Siebel School of Computing and Data Science</h3>
+  <p class="cinst">&#127979; See link</p>
+  <a class="view-btn" href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://vub.edu.bd/computer-science-information-technology-csit/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Victoria University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Dept. of Computer Science & Information Technology (CSIT)</h3>
+  <p class="cinst">&#127979; Victoria University</p>
+  <a class="view-btn" href="https://vub.edu.bd/computer-science-information-technology-csit/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://vub.edu.bd/computer-science-engineering-cse/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Victoria University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">B.Sc in CSE (Regular & Evening)</h3>
+  <p class="cinst">&#127979; Victoria University</p>
+  <a class="view-btn" href="https://vub.edu.bd/computer-science-engineering-cse/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://vub.edu.bd/computer-science-engineering-cse/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Victoria University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Dept. of Computer science & Engineering (CSE)</h3>
+  <p class="cinst">&#127979; Victoria University</p>
+  <a class="view-btn" href="https://vub.edu.bd/computer-science-engineering-cse/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://vub.edu.bd/career/#','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Victoria University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Science</h3>
+  <p class="cinst">&#127979; Victoria University</p>
+  <a class="view-btn" href="https://vub.edu.bd/career/#" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('http://3','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Victoria University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts & Humanities</h3>
+  <p class="cinst">&#127979; Victoria University</p>
+  <a class="view-btn" href="http://3" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://vub.edu.bd/career/#','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Victoria University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Business & Management</h3>
+  <p class="cinst">&#127979; Victoria University</p>
+  <a class="view-btn" href="https://vub.edu.bd/career/#" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uttara.ac.bd/visiting-faculty-members/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Uttara University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Visiting Faculty Members</h3>
+  <p class="cinst">&#127979; Uttara University</p>
+  <a class="view-btn" href="https://www.uttara.ac.bd/visiting-faculty-members/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uttara.ac.bd/faculty/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Uttara University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Members</h3>
+  <p class="cinst">&#127979; Uttara University</p>
+  <a class="view-btn" href="https://www.uttara.ac.bd/faculty/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uttara.ac.bd/faculty-hr-office/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Uttara University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty & HR Office</h3>
+  <p class="cinst">&#127979; Uttara University</p>
+  <a class="view-btn" href="https://www.uttara.ac.bd/faculty-hr-office/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uttara.ac.bd/department-of-cse','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Uttara University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Department of Computer Science and Engineering</h3>
+  <p class="cinst">&#127979; Uttara University</p>
+  <a class="view-btn" href="https://www.uttara.ac.bd/department-of-cse" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://primeasia.edu.bd/primeasia-university-faculty-honored-by-sofen-for-outstanding-contribution-to-bangladeshs-education-sector/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Primeasia Univ</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Primeasia University Faculty Honored by SOFEN for Outstanding Contribution to Bangladesh’s Education Sector</h3>
+  <p class="cinst">&#127979; Primeasia Univ</p>
+  <a class="view-btn" href="https://primeasia.edu.bd/primeasia-university-faculty-honored-by-sofen-for-outstanding-contribution-to-bangladeshs-education-sector/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://primeasia.edu.bd/others/career/faculty-position-opening/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Primeasia Univ</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Position Opening</h3>
+  <p class="cinst">&#127979; Primeasia Univ</p>
+  <a class="view-btn" href="https://primeasia.edu.bd/others/career/faculty-position-opening/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://primeasia.edu.bd/cse/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Primeasia Univ</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">B.Sc in Computer Science & Engineering (CSE)</h3>
+  <p class="cinst">&#127979; Primeasia Univ</p>
+  <a class="view-btn" href="https://primeasia.edu.bd/cse/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://primeasia.edu.bd/academic/academic-committee/faculty-recruitment-committee/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Primeasia Univ</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Recruitment Committee</h3>
+  <p class="cinst">&#127979; Primeasia Univ</p>
+  <a class="view-btn" href="https://primeasia.edu.bd/academic/academic-committee/faculty-recruitment-committee/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://primeasia.edu.bd/administration/office-of-it/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Primeasia Univ</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Information Technology (IT)</h3>
+  <p class="cinst">&#127979; Primeasia Univ</p>
+  <a class="view-btn" href="https://primeasia.edu.bd/administration/office-of-it/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://manarat.ac.bd/all-faculty-members/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Manarat Intl Univ</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">All Faculty Members</h3>
+  <p class="cinst">&#127979; Manarat Intl Univ</p>
+  <a class="view-btn" href="https://manarat.ac.bd/all-faculty-members/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('http://cse.manarat.ac.bd/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Manarat Intl Univ</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Department of Computer Science & Engineering</h3>
+  <p class="cinst">&#127979; Manarat Intl Univ</p>
+  <a class="view-btn" href="http://cse.manarat.ac.bd/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://iubat.edu/visiting-faculty/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">IUBAT</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Visiting Faculty</h3>
+  <p class="cinst">&#127979; IUBAT</p>
+  <a class="view-btn" href="https://iubat.edu/visiting-faculty/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Science &
                                                     Technology</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Arts & Social
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts & Social
                                                     Sciences</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Science and Technology</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fba','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Business Administration</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fba" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Arts and Social Sciences</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/publications','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty Publications</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/publications" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/Faculty-List','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty List</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/Faculty-List" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Science and
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Science and Technology</h3>
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fba','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Business Administration</h3>
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fba" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts and Social Sciences</h3>
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/publications','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Publications</h3>
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/publications" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/Faculty-List','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty List</h3>
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/Faculty-List" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Science and
                                                     Technology</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fhls','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Health and Life Sciences</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fhls" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/engg','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Engineering</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/engg" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fba','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Business
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fhls','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Health and Life Sciences</h3>
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fhls" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/engg','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Engineering</h3>
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/engg" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fba','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Business
                                                     Administration</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fba" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
-      <span class="badge" style="background:#2980b9">American Intl Univ (AIUB)</span>
-      <h3>Faculty of Arts and Social
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fba" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">American Intl Univ (AIUB)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts and Social
                                                     Sciences</h3>
-      <p class="inst">🏫 American Intl Univ (AIUB)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://cse.uiu.ac.bd/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Dept. of CSE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://cse.uiu.ac.bd/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-cse-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Assistant Professor CSE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/assistant-professor-cse-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/associate-professor-cse-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Associate Professor CSE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/associate-professor-cse-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/professor-cse-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Professor CSE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/professor-cse-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-microbiology-and-immunology-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Lecturer Microbiology and Immunology</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/lecturer-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-microbiology-and-immunology-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Assistant Professor Microbiology and Immunology</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/assistant-professor-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-eee-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Lecturer EEE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/lecturer-eee-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-eee-262/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Assistant Professor EEE</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/assistant-professor-eee-262/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-pharmacy-261/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Lecturer Pharmacy</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/lecturer-pharmacy-261/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-pharmacy-261/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Assistant Professor Pharmacy</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/career/assistant-professor-pharmacy-261/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.uiu.ac.bd/academics/faculty-members/','_blank')">
-      <span class="badge" style="background:#2980b9">UIU</span>
-      <h3>Faculty Members</h3>
-      <p class="inst">🏫 UIU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.uiu.ac.bd/academics/faculty-members/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Science &
+  <p class="cinst">&#127979; American Intl Univ (AIUB)</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://cse.uiu.ac.bd/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Dept. of CSE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://cse.uiu.ac.bd/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-cse-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Assistant Professor CSE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/assistant-professor-cse-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/associate-professor-cse-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Associate Professor CSE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/associate-professor-cse-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/professor-cse-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Professor CSE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/professor-cse-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-microbiology-and-immunology-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Lecturer Microbiology and Immunology</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/lecturer-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-microbiology-and-immunology-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Assistant Professor Microbiology and Immunology</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/assistant-professor-microbiology-and-immunology-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-eee-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Lecturer EEE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/lecturer-eee-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-eee-262/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Assistant Professor EEE</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/assistant-professor-eee-262/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/lecturer-pharmacy-261/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Lecturer Pharmacy</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/lecturer-pharmacy-261/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/career/assistant-professor-pharmacy-261/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Assistant Professor Pharmacy</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/career/assistant-professor-pharmacy-261/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.uiu.ac.bd/academics/faculty-members/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">UIU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Members</h3>
+  <p class="cinst">&#127979; UIU</p>
+  <a class="view-btn" href="https://www.uiu.ac.bd/academics/faculty-members/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Science &
                                                     Technology</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Arts & Social
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts & Social
                                                     Sciences</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Science and Technology</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fba','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Business Administration</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fba" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Arts and Social Sciences</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/publications','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty Publications</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/publications" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/Faculty-List','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty List</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/Faculty-List" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Science and
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Science and Technology</h3>
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fba','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Business Administration</h3>
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fba" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts and Social Sciences</h3>
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/publications','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Publications</h3>
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/publications" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/Faculty-List','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty List</h3>
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/Faculty-List" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fst','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Science and
                                                     Technology</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fhls','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Health and Life Sciences</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fhls" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/engg','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Engineering</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/engg" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fba','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Business
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fst" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fhls','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Health and Life Sciences</h3>
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fhls" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/engg','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Engineering</h3>
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/engg" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fba','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Business
                                                     Administration</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fba" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
-      <span class="badge" style="background:#2980b9">AIUB</span>
-      <h3>Faculty of Arts and Social
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fba" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.aiub.edu/faculties/fass','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">AIUB</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts and Social
                                                     Sciences</h3>
-      <p class="inst">🏫 AIUB</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('http://portal.northsouth.edu/','_blank')">
-      <span class="badge" style="background:#2980b9">North South Univ</span>
-      <h3>Faculty Portal (RDS)</h3>
-      <p class="inst">🏫 North South Univ</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="http://portal.northsouth.edu/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/%e0%a6%ad%e0%a7%87%e0%a6%9f%e0%a7%87%e0%a6%b0%e0%a6%bf%e0%a6%a8%e0%a6%be%e0%a6%b0%e0%a6%bf-%e0%a6%ae%e0%a7%87%e0%a6%a1%e0%a6%bf%e0%a6%b8%e0%a6%bf%e0%a6%a8-%e0%a6%8f%e0%a6%a8%e0%a7%8d%e0%a6%a1/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>ভেটেরিনারি মেডিসিন এন্ড এনিমেল সায়েন্স অনুষদের বিভাগসমূহে ও ইঞ্জিনিয়ারিং অনুষদের মেকানিক্যাল ইঞ্জিনিয়ারিং বিভাগে শিক্ষক নিয়োগ বিজ্ঞপ্তি।</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/%e0%a6%ad%e0%a7%87%e0%a6%9f%e0%a7%87%e0%a6%b0%e0%a6%bf%e0%a6%a8%e0%a6%be%e0%a6%b0%e0%a6%bf-%e0%a6%ae%e0%a7%87%e0%a6%a1%e0%a6%bf%e0%a6%b8%e0%a6%bf%e0%a6%a8-%e0%a6%8f%e0%a6%a8%e0%a7%8d%e0%a6%a1/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/%e0%a6%95%e0%a6%ae%e0%a7%8d%e0%a6%aa%e0%a6%bf%e0%a6%89%e0%a6%9f%e0%a6%be%e0%a6%b0-%e0%a6%b8%e0%a6%be%e0%a6%af%e0%a6%bc%e0%a7%87%e0%a6%a8%e0%a7%8d%e0%a6%b8-%e0%a6%8f%e0%a6%a8%e0%a7%8d%e0%a6%a1/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং (সিএসই) বিভাগে ২০২৪-২০২৫শিক্ষাবর্ষে M.Sc (Engg.)/M.Engg. (CSE) প্রোগ্রামে ভর্তির জন্য আবেদনপত্র আহবান করা যাচ্ছে।</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/%e0%a6%95%e0%a6%ae%e0%a7%8d%e0%a6%aa%e0%a6%bf%e0%a6%89%e0%a6%9f%e0%a6%be%e0%a6%b0-%e0%a6%b8%e0%a6%be%e0%a6%af%e0%a6%bc%e0%a7%87%e0%a6%a8%e0%a7%8d%e0%a6%b8-%e0%a6%8f%e0%a6%a8%e0%a7%8d%e0%a6%a1/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.mbstu.ac.bd/faculty-of-veterinary-medicine-and-animal-sciences/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Faculty of Veterinary Medicine and Animal Sciences</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.mbstu.ac.bd/faculty-of-veterinary-medicine-and-animal-sciences/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/faculty-detail/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Faculty Detail</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/faculty-detail/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-arts/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Faculty of Arts</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/faculty-of-arts/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-social-science/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Faculty of Social Science</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/faculty-of-social-science/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-business-studies/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Faculty of Business Studies</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/faculty-of-business-studies/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-science/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Faculty of Science</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/faculty-of-science/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-life-science/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Faculty of Life Science</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/faculty-of-life-science/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://cse.mbstu.ac.bd/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Computer Science and Engineering</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://cse.mbstu.ac.bd/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-engineering/','_blank')">
-      <span class="badge" style="background:#2980b9">MBSTU</span>
-      <h3>Faculty of Engineering</h3>
-      <p class="inst">🏫 MBSTU</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://mbstu.ac.bd/faculty-of-engineering/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://ictcell.cu.ac.bd','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong University</span>
-      <h3>ICT Cell, University of Chittagong</h3>
-      <p class="inst">🏫 Chittagong University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://ictcell.cu.ac.bd" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://ictcell.cu.ac.bd/offi-email/','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong University</span>
-      <h3>Official Email for Faculty Members/Officers/Offices</h3>
-      <p class="inst">🏫 Chittagong University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://ictcell.cu.ac.bd/offi-email/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://ictcell.cu.ac.bd/web-profile/','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong University</span>
-      <h3>Create Faculty/Officer Profile in CU Webportal</h3>
-      <p class="inst">🏫 Chittagong University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://ictcell.cu.ac.bd/web-profile/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://cu.ac.bd/international-adjunct-faculty/','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong University</span>
-      <h3>International Adjunct Faculty</h3>
-      <p class="inst">🏫 Chittagong University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://cu.ac.bd/international-adjunct-faculty/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://cu.ac.bd/peopleresources/facultyprofile.php?secno=22&deptno=24','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong University</span>
-      <h3>Faculty Profiles</h3>
-      <p class="inst">🏫 Chittagong University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://cu.ac.bd/peopleresources/facultyprofile.php?secno=22&deptno=24" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://cu.ac.bd/faculty-dept-inst/','_blank')">
-      <span class="badge" style="background:#2980b9">Chittagong University</span>
-      <h3>Faculty, Department/Institute</h3>
-      <p class="inst">🏫 Chittagong University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://cu.ac.bd/faculty-dept-inst/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ru.ac.bd/ictcenter/','_blank')">
-      <span class="badge" style="background:#2980b9">Rajshahi University</span>
-      <h3>ICT Center</h3>
-      <p class="inst">🏫 Rajshahi University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ru.ac.bd/ictcenter/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.juniv.edu/institute/iit','_blank')">
-      <span class="badge" style="background:#2980b9">JU (Jahangirnagar)</span>
-      <h3>Institute of Information Technology</h3>
-      <p class="inst">🏫 JU (Jahangirnagar)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.juniv.edu/institute/iit" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.juniv.edu/faculty/law','_blank')">
-      <span class="badge" style="background:#2980b9">JU (Jahangirnagar)</span>
-      <h3>Faculty of Law</h3>
-      <p class="inst">🏫 JU (Jahangirnagar)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.juniv.edu/faculty/law" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.juniv.edu/faculty/business','_blank')">
-      <span class="badge" style="background:#2980b9">JU (Jahangirnagar)</span>
-      <h3>Faculty of Business Studies</h3>
-      <p class="inst">🏫 JU (Jahangirnagar)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.juniv.edu/faculty/business" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.juniv.edu/faculty/biosci','_blank')">
-      <span class="badge" style="background:#2980b9">JU (Jahangirnagar)</span>
-      <h3>Faculty of Biological Sciences</h3>
-      <p class="inst">🏫 JU (Jahangirnagar)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.juniv.edu/faculty/biosci" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.juniv.edu/faculty/socialsci','_blank')">
-      <span class="badge" style="background:#2980b9">JU (Jahangirnagar)</span>
-      <h3>Faculty of Social Sciences</h3>
-      <p class="inst">🏫 JU (Jahangirnagar)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.juniv.edu/faculty/socialsci" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.juniv.edu/faculty/science','_blank')">
-      <span class="badge" style="background:#2980b9">JU (Jahangirnagar)</span>
-      <h3>Faculty of Mathematical & Physical Sciences</h3>
-      <p class="inst">🏫 JU (Jahangirnagar)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.juniv.edu/faculty/science" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.juniv.edu/faculty/arts','_blank')">
-      <span class="badge" style="background:#2980b9">JU (Jahangirnagar)</span>
-      <h3>Faculty of Arts & Humanities</h3>
-      <p class="inst">🏫 JU (Jahangirnagar)</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.juniv.edu/faculty/arts" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ECE.ruet.ac.bd','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Electrical & Computer Engineering</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ECE.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.CSE.ruet.ac.bd','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Computer Science & Engineering</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.CSE.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://ictd.gov.bd/','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>ICT Ministry</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://ictd.gov.bd/" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ruet.ac.bd/teacher_list','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Faculty Short Info</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ruet.ac.bd/teacher_list" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ruet.ac.bd/teacher','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Faculty Members</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ruet.ac.bd/teacher" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ruet.ac.bd/publications','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>PublicationsofFaculty Members</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ruet.ac.bd/publications" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ruet.ac.bd/all-notice-circular/#','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Faculty of Applied Science and Humanities</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ruet.ac.bd/all-notice-circular/#" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ruet.ac.bd/all-notice-circular/#','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Faculty of Mechanical Engineering</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ruet.ac.bd/all-notice-circular/#" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ruet.ac.bd/all-notice-circular/#','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Faculty of Civil Engineering</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ruet.ac.bd/all-notice-circular/#" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ECE.ruet.ac.bd','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Dept. of Electrical & Computer Engineering (ECE)</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ECE.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.CSE.ruet.ac.bd','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Dept. of Computer Science & Engineering (CSE)</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.CSE.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ruet.ac.bd/all-notice-circular/#','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Faculty of Electrical & Computer Engineering</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ruet.ac.bd/all-notice-circular/#" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.IICT.ruet.ac.bd','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Institute of Information and Communication Technology (IICT)</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.IICT.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.ruet.ac.bd/section/ICT','_blank')">
-      <span class="badge" style="background:#2980b9">RUET</span>
-      <h3>Director of ICT Cell(ICT)</h3>
-      <p class="inst">🏫 RUET</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.ruet.ac.bd/section/ICT" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
-
-    <div class="card" onclick="window.open('https://www.du.ac.bd/faculty_member','_blank')">
-      <span class="badge" style="background:#2980b9">Dhaka University</span>
-      <h3>Faculty Member
+  <p class="cinst">&#127979; AIUB</p>
+  <a class="view-btn" href="https://www.aiub.edu/faculties/fass" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('http://portal.northsouth.edu/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">North South Univ</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Portal (RDS)</h3>
+  <p class="cinst">&#127979; North South Univ</p>
+  <a class="view-btn" href="http://portal.northsouth.edu/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/%e0%a6%ad%e0%a7%87%e0%a6%9f%e0%a7%87%e0%a6%b0%e0%a6%bf%e0%a6%a8%e0%a6%be%e0%a6%b0%e0%a6%bf-%e0%a6%ae%e0%a7%87%e0%a6%a1%e0%a6%bf%e0%a6%b8%e0%a6%bf%e0%a6%a8-%e0%a6%8f%e0%a6%a8%e0%a7%8d%e0%a6%a1/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">ভেটেরিনারি মেডিসিন এন্ড এনিমেল সায়েন্স অনুষদের বিভাগসমূহে ও ইঞ্জিনিয়ারিং অনুষদের মেকানিক্যাল ইঞ্জিনিয়ারিং বিভাগে শিক্ষক নিয়োগ বিজ্ঞপ্তি।</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/%e0%a6%ad%e0%a7%87%e0%a6%9f%e0%a7%87%e0%a6%b0%e0%a6%bf%e0%a6%a8%e0%a6%be%e0%a6%b0%e0%a6%bf-%e0%a6%ae%e0%a7%87%e0%a6%a1%e0%a6%bf%e0%a6%b8%e0%a6%bf%e0%a6%a8-%e0%a6%8f%e0%a6%a8%e0%a7%8d%e0%a6%a1/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/%e0%a6%95%e0%a6%ae%e0%a7%8d%e0%a6%aa%e0%a6%bf%e0%a6%89%e0%a6%9f%e0%a6%be%e0%a6%b0-%e0%a6%b8%e0%a6%be%e0%a6%af%e0%a6%bc%e0%a7%87%e0%a6%a8%e0%a7%8d%e0%a6%b8-%e0%a6%8f%e0%a6%a8%e0%a7%8d%e0%a6%a1/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং (সিএসই) বিভাগে ২০২৪-২০২৫শিক্ষাবর্ষে M.Sc (Engg.)/M.Engg. (CSE) প্রোগ্রামে ভর্তির জন্য আবেদনপত্র আহবান করা যাচ্ছে।</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/%e0%a6%95%e0%a6%ae%e0%a7%8d%e0%a6%aa%e0%a6%bf%e0%a6%89%e0%a6%9f%e0%a6%be%e0%a6%b0-%e0%a6%b8%e0%a6%be%e0%a6%af%e0%a6%bc%e0%a7%87%e0%a6%a8%e0%a7%8d%e0%a6%b8-%e0%a6%8f%e0%a6%a8%e0%a7%8d%e0%a6%a1/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.mbstu.ac.bd/faculty-of-veterinary-medicine-and-animal-sciences/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Veterinary Medicine and Animal Sciences</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://www.mbstu.ac.bd/faculty-of-veterinary-medicine-and-animal-sciences/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/faculty-detail/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Detail</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/faculty-detail/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-arts/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/faculty-of-arts/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-social-science/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Social Science</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/faculty-of-social-science/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-business-studies/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Business Studies</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/faculty-of-business-studies/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-science/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Science</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/faculty-of-science/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-life-science/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Life Science</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/faculty-of-life-science/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://cse.mbstu.ac.bd/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Computer Science and Engineering</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://cse.mbstu.ac.bd/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://mbstu.ac.bd/faculty-of-engineering/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">MBSTU</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Engineering</h3>
+  <p class="cinst">&#127979; MBSTU</p>
+  <a class="view-btn" href="https://mbstu.ac.bd/faculty-of-engineering/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://ictcell.cu.ac.bd','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">ICT Cell, University of Chittagong</h3>
+  <p class="cinst">&#127979; Chittagong University</p>
+  <a class="view-btn" href="https://ictcell.cu.ac.bd" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://ictcell.cu.ac.bd/offi-email/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Official Email for Faculty Members/Officers/Offices</h3>
+  <p class="cinst">&#127979; Chittagong University</p>
+  <a class="view-btn" href="https://ictcell.cu.ac.bd/offi-email/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://ictcell.cu.ac.bd/web-profile/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Create Faculty/Officer Profile in CU Webportal</h3>
+  <p class="cinst">&#127979; Chittagong University</p>
+  <a class="view-btn" href="https://ictcell.cu.ac.bd/web-profile/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://cu.ac.bd/international-adjunct-faculty/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">International Adjunct Faculty</h3>
+  <p class="cinst">&#127979; Chittagong University</p>
+  <a class="view-btn" href="https://cu.ac.bd/international-adjunct-faculty/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://cu.ac.bd/peopleresources/facultyprofile.php?secno=22&deptno=24','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Profiles</h3>
+  <p class="cinst">&#127979; Chittagong University</p>
+  <a class="view-btn" href="https://cu.ac.bd/peopleresources/facultyprofile.php?secno=22&deptno=24" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://cu.ac.bd/faculty-dept-inst/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Chittagong University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty, Department/Institute</h3>
+  <p class="cinst">&#127979; Chittagong University</p>
+  <a class="view-btn" href="https://cu.ac.bd/faculty-dept-inst/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ru.ac.bd/ictcenter/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Rajshahi University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">ICT Center</h3>
+  <p class="cinst">&#127979; Rajshahi University</p>
+  <a class="view-btn" href="https://www.ru.ac.bd/ictcenter/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.juniv.edu/institute/iit','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">JU (Jahangirnagar)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Institute of Information Technology</h3>
+  <p class="cinst">&#127979; JU (Jahangirnagar)</p>
+  <a class="view-btn" href="https://www.juniv.edu/institute/iit" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.juniv.edu/faculty/law','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">JU (Jahangirnagar)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Law</h3>
+  <p class="cinst">&#127979; JU (Jahangirnagar)</p>
+  <a class="view-btn" href="https://www.juniv.edu/faculty/law" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.juniv.edu/faculty/business','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">JU (Jahangirnagar)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Business Studies</h3>
+  <p class="cinst">&#127979; JU (Jahangirnagar)</p>
+  <a class="view-btn" href="https://www.juniv.edu/faculty/business" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.juniv.edu/faculty/biosci','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">JU (Jahangirnagar)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Biological Sciences</h3>
+  <p class="cinst">&#127979; JU (Jahangirnagar)</p>
+  <a class="view-btn" href="https://www.juniv.edu/faculty/biosci" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.juniv.edu/faculty/socialsci','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">JU (Jahangirnagar)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Social Sciences</h3>
+  <p class="cinst">&#127979; JU (Jahangirnagar)</p>
+  <a class="view-btn" href="https://www.juniv.edu/faculty/socialsci" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.juniv.edu/faculty/science','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">JU (Jahangirnagar)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Mathematical & Physical Sciences</h3>
+  <p class="cinst">&#127979; JU (Jahangirnagar)</p>
+  <a class="view-btn" href="https://www.juniv.edu/faculty/science" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.juniv.edu/faculty/arts','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">JU (Jahangirnagar)</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Arts & Humanities</h3>
+  <p class="cinst">&#127979; JU (Jahangirnagar)</p>
+  <a class="view-btn" href="https://www.juniv.edu/faculty/arts" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ECE.ruet.ac.bd','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Electrical & Computer Engineering</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ECE.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.CSE.ruet.ac.bd','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Computer Science & Engineering</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.CSE.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://ictd.gov.bd/','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">ICT Ministry</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://ictd.gov.bd/" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ruet.ac.bd/teacher_list','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Short Info</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ruet.ac.bd/teacher_list" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ruet.ac.bd/teacher','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Members</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ruet.ac.bd/teacher" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ruet.ac.bd/publications','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">PublicationsofFaculty Members</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ruet.ac.bd/publications" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ruet.ac.bd/all-notice-circular/#','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Applied Science and Humanities</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ruet.ac.bd/all-notice-circular/#" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ruet.ac.bd/all-notice-circular/#','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Mechanical Engineering</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ruet.ac.bd/all-notice-circular/#" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ruet.ac.bd/all-notice-circular/#','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Civil Engineering</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ruet.ac.bd/all-notice-circular/#" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ECE.ruet.ac.bd','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Dept. of Electrical & Computer Engineering (ECE)</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ECE.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.CSE.ruet.ac.bd','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Dept. of Computer Science & Engineering (CSE)</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.CSE.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ruet.ac.bd/all-notice-circular/#','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty of Electrical & Computer Engineering</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ruet.ac.bd/all-notice-circular/#" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.IICT.ruet.ac.bd','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Institute of Information and Communication Technology (IICT)</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.IICT.ruet.ac.bd" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.ruet.ac.bd/section/ICT','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">RUET</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Director of ICT Cell(ICT)</h3>
+  <p class="cinst">&#127979; RUET</p>
+  <a class="view-btn" href="https://www.ruet.ac.bd/section/ICT" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
+<article class="card" onclick="window.open('https://www.du.ac.bd/faculty_member','_blank')">
+  <div class="card-top">
+    <span class="badge" style="background:#7c3aed">Dhaka University</span>
+    <span class="ago">4h ago</span>
+  </div>
+  <h3 class="ctitle">Faculty Member
                                             Profile</h3>
-      <p class="inst">🏫 Dhaka University</p>
-      <p class="date">📅 Found: 2026-05-24</p>
-      <a href="https://www.du.ac.bd/faculty_member" target="_blank" onclick="event.stopPropagation()">
-        View Circular →
-      </a>
-    </div>
+  <p class="cinst">&#127979; Dhaka University</p>
+  <a class="view-btn" href="https://www.du.ac.bd/faculty_member" target="_blank" onclick="event.stopPropagation()">View Circular &rarr;</a>
+</article>
 </div>
 
 <footer>
-  Built with ❤️ · Auto-updates via GitHub Actions · 
-  <a href="https://github.com" style="color:var(--accent)">View Source</a>
+  Made with &#128154; &amp; &#128151; &nbsp;&middot;&nbsp;
+  Auto-updates via GitHub Actions &nbsp;&middot;&nbsp;
+  <a href="https://github.com" target="_blank">View Source</a>
 </footer>
+</div>
 
 <script>
-  const cards = document.querySelectorAll('.card');
-  const search = document.getElementById('search');
-  const sourceFilter = document.getElementById('sourceFilter');
+const cards   = [...document.querySelectorAll('.card')];
+const qInput  = document.getElementById('q');
+const chipsEl = document.getElementById('chips');
+let activeSrc = null;
 
-  function filter() {
-    const q = search.value.toLowerCase();
-    const src = sourceFilter.value.toLowerCase();
-    cards.forEach(c => {
-      const text = c.innerText.toLowerCase();
-      const badge = c.querySelector('.badge').innerText.toLowerCase();
-      const matchQ = !q || text.includes(q);
-      const matchS = !src || (src === 'university' ? badge !== 'bdjobs' : badge.includes(src));
-      c.style.display = matchQ && matchS ? '' : 'none';
-    });
-  }
+const sources = [...new Set(cards.map(c=>c.querySelector('.badge').textContent))];
 
-  search.addEventListener('input', filter);
-  sourceFilter.addEventListener('change', filter);
+function buildChips(){
+  chipsEl.innerHTML='';
+  ['All',...sources].forEach(s=>{
+    const b=document.createElement('button');
+    b.className='chip'+(activeSrc===null&&s==='All'||activeSrc===s?' active':'');
+    b.textContent=s;
+    b.onclick=()=>{activeSrc=s==='All'?null:s;buildChips();filt()};
+    chipsEl.appendChild(b);
+  });
+}
 
-  // Auto-refresh every 30 minutes
-  setTimeout(() => location.reload(), 30 * 60 * 1000);
+function filt(){
+  const q=qInput.value.toLowerCase();
+  cards.forEach(c=>{
+    const txt=c.innerText.toLowerCase();
+    const src=c.querySelector('.badge').textContent;
+    c.style.display=(!q||txt.includes(q))&&(activeSrc===null||src===activeSrc)?'':'none';
+  });
+}
+
+buildChips();
+setTimeout(()=>location.reload(),30*60*1000);
 </script>
 </body>
 </html>
