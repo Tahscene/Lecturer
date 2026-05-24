@@ -276,7 +276,19 @@ const qInput  = document.getElementById('q');
 const chipsEl = document.getElementById('chips');
 let activeSrc = null;
 
-const sources = [...new Set(cards.map(c=>c.querySelector('.badge').textContent))];
+const PRIORITY = [
+  "Ahsanullah Univ (AUST)","North South University","BRAC University",
+  "AIUB","IUB","East West University","UIU","ULAB",
+  "Daffodil Intl University","Stamford University","BDJobs","Google News"
+];
+const rawSrc = [...new Set(cards.map(c=>c.querySelector('.badge').textContent))];
+const sources = rawSrc.sort((a,b)=>{{
+  const ai=PRIORITY.indexOf(a), bi=PRIORITY.indexOf(b);
+  if(ai>-1&&bi>-1) return ai-bi;
+  if(ai>-1) return -1;
+  if(bi>-1) return 1;
+  return a.localeCompare(b);
+}});
 
 function buildChips(){{
   chipsEl.innerHTML='';
