@@ -25,23 +25,30 @@ MAX_AGE_DAYS = 30   # only show jobs from last 30 days
 # ─────────────────────────────────────────────────────────────────────────────
 
 # MUST contain at least one of these (it's a hiring post, not a page/list)
+# ONLY Lecturer position - no professor, no faculty list
 HIRING_WORDS = [
-    "lecturer", "লেকচারার",
-    "assistant professor", "associate professor",
-    "adjunct lecturer", "visiting lecturer",
-    "faculty position", "faculty opening", "faculty vacancy",
-    "job circular", "circular", "vacancy", "recruitment",
-    "নিয়োগ বিজ্ঞপ্তি", "শিক্ষক নিয়োগ",
+    "lecturer",
+    "লেকচারার",
+    "adjunct lecturer",
+    "visiting lecturer",
 ]
 
 # AND must also contain a CSE/IT department signal
+# Only CSE / IT / Computer Science - strict
 CSE_WORDS = [
-    "computer science", "computer engineering",
-    " cse", "cse ", "(cse)", "cse,", "cse/",
-    "information technology", " it ", "(it)",
-    "software engineering", "ict", "computing",
-    "data science", "artificial intelligence",
-    "কম্পিউটার", "তথ্য প্রযুক্তি",
+    "computer science",
+    "computer science and engineering",
+    "computer science & engineering",
+    "computer engineering",
+    " cse",
+    "cse ",
+    "(cse)",
+    "cse,",
+    "cse/",
+    "information technology",
+    "software engineering",
+    "কম্পিউটার বিজ্ঞান",
+    "তথ্য প্রযুক্তি",
 ]
 
 # REJECT if title matches any of these — these are nav links / page names, NOT job ads
