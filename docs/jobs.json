@@ -1,6 +1,33 @@
 {
   "jobs": [
     {
+      "id": "7c22f07a8d61",
+      "title": "CECH welcomes 25 new faculty members to the University of Cincinnati - University of Cincinnati",
+      "source": "Google News",
+      "institution": "See link",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQS0ZlWXJiZjlWRFlGdWM0UUkyMUhSOFpyRl91Zl8tbDJkYUR0SXYxNjZ5MGJZdVZkYndLN0dBNmVPd2JyQXdFNWJLQUJxN0xkbXhJT1NOdmZ2MGpOVUNUdlhNeVlnOWRseHVHa3U4NTJ1cGtKdW01M0NLam1mdXkzMkRfTDNCVHZrT1cydWVIQ1Q0MGViempTdWRmaDNCWm8ybTU4WDBab09IU2lTNWJEek0xM3c?oc=5",
+      "found_at": "2026-05-24T15:53:34.471701",
+      "notified": false
+    },
+    {
+      "id": "5d4632e5506d",
+      "title": "BU CS opens search for new faculty members! | Computer Science - Boston University",
+      "source": "Google News",
+      "institution": "See link",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPRWpSZ3JPbkkxT2E5VTFTMjZIUUYwRU1lcGVSVFlTWmFNcTRPa2ZzVGFaRjdZMWExVFo1TjZYa1FDbUhYelJGRkliV05BWjZUTkVUYlJMVHFFX3FLSHhsMll2OU1vTWpWQms3TzRDd3lkZUtsVFR2dzV5SDlnNmtSSmJB?oc=5",
+      "found_at": "2026-05-24T15:53:33.523929",
+      "notified": false
+    },
+    {
+      "id": "2d1959292298",
+      "title": "Computer Science welcomes 17 new faculty members - University of Illinois Urbana-Champaign",
+      "source": "Google News",
+      "institution": "See link",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RNi05UFpVTmNMdUF3ZVJvNVYySzh6bEVJNEZGaFhlUVExUVB5SDhzaDlKc3c3YmJucExvT2lLTDhfZjJqLS1ydFBKakk2SXltZUxORXh3dlc1ZW5hbzA4?oc=5",
+      "found_at": "2026-05-24T15:53:33.523899",
+      "notified": false
+    },
+    {
       "id": "c5850a115d1a",
       "title": "📄 Download Job Description (PDF)",
       "source": "Eastern University",
@@ -1153,5 +1180,5 @@
       "notified": false
     }
   ],
-  "last_updated": "2026-05-24T15:37:10.349189"
+  "last_updated": "2026-05-24T15:55:53.704263"
 }
