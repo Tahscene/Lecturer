@@ -1,18 +1,14 @@
 """
-BD Lecturer Job Tracker — v3 (Reliable Edition)
-Strategy:
-  1. BDJobs RSS feed       → no bot block, always works
-  2. Google News RSS        → finds university circulars Google already indexed
-  3. University pages       → fixed URLs + PDF circular detection + session
+BD Lecturer Job Tracker — v4
+STRICT: Only CSE/IT Lecturer positions, last 60 days only.
 """
 
 import requests, json, os, hashlib, time, sys
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import xml.etree.ElementTree as ET
 
-# ── Session with realistic browser headers ────────────────────────────────────
 SESSION = requests.Session()
 SESSION.headers.update({
     "User-Agent": (
@@ -22,48 +18,64 @@ SESSION.headers.update({
     ),
     "Accept":          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br",
     "Referer":         "https://www.google.com/",
-    "DNT":             "1",
 })
 
-DATA_FILE = "docs/jobs.json"
+DATA_FILE    = "docs/jobs.json"
+MAX_AGE_DAYS = 60   # discard jobs older than this
 
-# ── Keywords ──────────────────────────────────────────────────────────────────
-POSITION_KW = ["lecturer", "assistant professor", "associate professor",
-               "faculty member", "লেকচারার", "শিক্ষক নিয়োগ", "faculty position"]
+# ── STRICT keyword filters ────────────────────────────────────────────────────
+# BOTH of these must match for a job to be accepted
 
-CSE_KW      = ["computer science", "computer engineering", "cse", "it ",
-               "information technology", "software engineering", "ict",
-               "computing", "data science", "artificial intelligence",
-               "machine learning", "কম্পিউটার"]
+LECTURER_KW = [
+    "lecturer", "লেকচারার",
+    "assistant professor", "associate professor",
+    "adjunct lecturer", "visiting lecturer",
+]
 
-BLOCK_KW    = ["student", "admission", "scholarship", "result", "exam",
-               "routine", "notice of", "বিজ্ঞপ্তি", "payment"]
+CSE_KW = [
+    "computer science", "computer engineering",
+    "cse", "information technology", " it ",
+    "software engineering", "ict",
+    "computing", "data science",
+    "artificial intelligence", "machine learning",
+    "কম্পিউটার", "তথ্য প্রযুক্তি",
+]
 
-def is_position(txt):
-    t = txt.lower()
-    return any(k in t for k in POSITION_KW)
+# These words in any matched job → SKIP (false positives)
+REJECT_KW = [
+    "student", "admission", "scholarship", "result", "exam",
+    "routine", "seminar", "workshop", "conference", "tender",
+    "phd", "internship", "research assistant", "lab assistant",
+    "non-teaching", "accounts", "registrar", "librarian",
+    "nurse", "doctor", "security", "driver", "peon",
+    "civil", "mechanical", "electrical", "eee", "business",
+    "marketing", "finance", "english", "bangla", "economics",
+    "mathematics", "physics", "chemistry", "biology",
+    "pharmacy", "law", "architecture",
+]
 
-def is_cse(txt):
-    t = txt.lower()
-    return any(k in t for k in CSE_KW)
-
-def is_blocked(txt):
-    t = txt.lower()
-    return any(k in t for k in BLOCK_KW)
-
-def is_relevant(txt):
-    if is_blocked(txt): return False
-    return is_position(txt) and is_cse(txt)
-
-def is_faculty_any_dept(txt):
-    """Catch generic faculty/lecturer ads that might be CSE"""
-    if is_blocked(txt): return False
-    return is_position(txt) and len(txt.strip()) < 100
+def is_strict_cse_lecturer(text: str) -> bool:
+    t = text.lower()
+    if any(r in t for r in REJECT_KW):
+        return False
+    has_lecturer = any(k in t for k in LECTURER_KW)
+    has_cse      = any(k in t for k in CSE_KW)
+    return has_lecturer and has_cse
 
 def make_id(title, source):
-    return hashlib.md5(f"{title.lower().strip()}{source.lower().strip()}".encode()).hexdigest()[:12]
+    return hashlib.md5(f"{title.lower().strip()}{source.lower()}".encode()).hexdigest()[:12]
+
+def is_recent(date_str: str) -> bool:
+    """Return True if date_str (ISO format) is within MAX_AGE_DAYS."""
+    try:
+        dt  = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        now = datetime.now(timezone.utc)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return (now - dt).days <= MAX_AGE_DAYS
+    except Exception:
+        return True  # unknown date → keep it
 
 def load_existing():
     if os.path.exists(DATA_FILE):
@@ -81,9 +93,9 @@ def get_html(url, timeout=15):
         r = SESSION.get(url, timeout=timeout, allow_redirects=True)
         if r.status_code == 200:
             return BeautifulSoup(r.content, "lxml")
-        print(f"    HTTP {r.status_code} → {url[:60]}")
+        print(f"    HTTP {r.status_code} → {url[:55]}")
     except Exception as e:
-        print(f"    ERR → {url[:60]} | {e}")
+        print(f"    ERR → {url[:55]} | {e}")
     return None
 
 def get_rss(url, timeout=15):
@@ -92,97 +104,101 @@ def get_rss(url, timeout=15):
         if r.status_code == 200:
             return ET.fromstring(r.content)
     except Exception as e:
-        print(f"    RSS ERR → {url[:60]} | {e}")
+        print(f"    RSS ERR → {url[:55]} | {e}")
     return None
 
 # ════════════════════════════════════════════════════════════════════════════════
-# SOURCE 1 — BDJobs RSS feeds (no bot block!)
+# SOURCE 1 — BDJobs RSS (Education category)
 # ════════════════════════════════════════════════════════════════════════════════
-BDJOBS_RSS = [
-    # Category 10 = Education/Training
+BDJOBS_RSS_URLS = [
     "https://jobs.bdjobs.com/rss/rss.asp?fcat=10",
-    # Keyword-based RSS (if available)
-    "https://jobs.bdjobs.com/rss/rss.asp?txtsearch=lecturer",
-    "https://jobs.bdjobs.com/rss/rss.asp?txtsearch=CSE+lecturer",
+    "https://jobs.bdjobs.com/rss/rss.asp?txtsearch=lecturer+CSE",
+    "https://jobs.bdjobs.com/rss/rss.asp?txtsearch=lecturer+computer",
+    "https://jobs.bdjobs.com/rss/rss.asp?txtsearch=lecturer+IT",
 ]
 
 def scrape_bdjobs_rss():
     jobs, seen = [], set()
-    print("  [BDJobs RSS] Fetching education category feed...")
-
-    for rss_url in BDJOBS_RSS:
-        root = get_rss(rss_url)
-        if root is None:
-            continue
-
-        # RSS: <channel><item><title>...</title><link>...</link><description>...
-        ns = {"atom": "http://www.w3.org/2005/Atom"}
+    print("  [BDJobs RSS]")
+    for url in BDJOBS_RSS_URLS:
+        root = get_rss(url)
+        if root is None: continue
         items = root.findall(".//item")
-        print(f"    → {len(items)} items in feed: {rss_url[-40:]}")
-
+        print(f"    {len(items)} items ← {url[-35:]}")
         for item in items:
             title = (item.findtext("title") or "").strip()
             link  = (item.findtext("link")  or "").strip()
             desc  = (item.findtext("description") or "").strip()
-            full  = f"{title} {desc}"
+            pub   = (item.findtext("pubDate") or "").strip()
 
-            if not is_relevant(full) and not is_faculty_any_dept(full):
+            combined = f"{title} {desc}"
+            if not is_strict_cse_lecturer(combined):
                 continue
 
-            # extract institution from description
-            soup_d  = BeautifulSoup(desc, "lxml")
-            inst    = soup_d.get_text(" ", strip=True)[:60] or "Unknown"
+            # parse pubDate → ISO
+            found_at = datetime.utcnow().isoformat()
+            if pub:
+                try:
+                    from email.utils import parsedate_to_datetime
+                    found_at = parsedate_to_datetime(pub).isoformat()
+                except Exception:
+                    pass
+
+            if not is_recent(found_at):
+                continue
 
             jid = make_id(title, link)
             if jid in seen: continue
             seen.add(jid)
 
+            soup_d = BeautifulSoup(desc, "lxml")
+            inst   = soup_d.get_text(" ", strip=True)[:80] or "Unknown"
             jobs.append({"id": jid, "title": title, "source": "BDJobs",
                          "institution": inst, "url": link,
-                         "found_at": datetime.utcnow().isoformat(), "notified": False})
+                         "found_at": found_at, "notified": False})
         time.sleep(0.5)
 
-    print(f"  [BDJobs RSS] → {len(jobs)} relevant job(s)")
+    print(f"    → {len(jobs)} CSE lecturer jobs")
     return jobs
 
 # ════════════════════════════════════════════════════════════════════════════════
-# SOURCE 2 — Google News RSS (finds circulars Google already indexed!)
+# SOURCE 2 — Google News RSS
 # ════════════════════════════════════════════════════════════════════════════════
-GOOGLE_NEWS_QUERIES = [
-    "lecturer+CSE+university+Bangladesh+circular",
+GNEWS_QUERIES = [
+    "lecturer+CSE+university+Bangladesh+job+circular",
     "assistant+professor+computer+science+Bangladesh+university",
-    "faculty+position+CSE+Bangladesh+university+2025",
-    "lecturer+IT+university+Bangladesh+job+circular",
+    "lecturer+IT+university+Bangladesh+circular+2025",
+    "lecturer+information+technology+Bangladesh+university",
 ]
-
-GOOGLE_NEWS_BASE = "https://news.google.com/rss/search?q={q}&hl=en-BD&gl=BD&ceid=BD:en"
+GNEWS_BASE = "https://news.google.com/rss/search?q={q}&hl=en-BD&gl=BD&ceid=BD:en"
 
 def scrape_google_news():
     jobs, seen = [], set()
-    print("  [Google News RSS] Searching for university circulars...")
-
-    for q in GOOGLE_NEWS_QUERIES:
-        url  = GOOGLE_NEWS_BASE.format(q=q)
-        root = get_rss(url)
-        if root is None:
-            continue
-
+    print("  [Google News RSS]")
+    for q in GNEWS_QUERIES:
+        root = get_rss(GNEWS_BASE.format(q=q))
+        if root is None: continue
         items = root.findall(".//item")
-        print(f"    → {len(items)} news items for: {q[:40]}")
-
+        print(f"    {len(items)} items ← {q[:45]}")
         for item in items:
             title = (item.findtext("title") or "").strip()
             link  = (item.findtext("link")  or "").strip()
-            desc  = (item.findtext("description") or title).strip()
-            full  = f"{title} {desc}"
+            desc  = (item.findtext("description") or "").strip()
+            pub   = (item.findtext("pubDate") or "").strip()
 
-            # Skip news articles, only want actual job postings
-            skip_words = ["award", "research paper", "published", "conference",
-                          "seminar", "workshop", "promoted", "election"]
-            if any(w in full.lower() for w in skip_words):
+            combined = f"{title} {desc}"
+            if not is_strict_cse_lecturer(combined):
                 continue
 
-            if not is_position(full):
+            found_at = datetime.utcnow().isoformat()
+            if pub:
+                try:
+                    from email.utils import parsedate_to_datetime
+                    found_at = parsedate_to_datetime(pub).isoformat()
+                except Exception:
+                    pass
+
+            if not is_recent(found_at):
                 continue
 
             jid = make_id(title, link[:30])
@@ -191,76 +207,66 @@ def scrape_google_news():
 
             jobs.append({"id": jid, "title": title, "source": "Google News",
                          "institution": "See link", "url": link,
-                         "found_at": datetime.utcnow().isoformat(), "notified": False})
-
+                         "found_at": found_at, "notified": False})
         time.sleep(0.5)
 
-    print(f"  [Google News RSS] → {len(jobs)} item(s)")
+    print(f"    → {len(jobs)} relevant items")
     return jobs
 
 # ════════════════════════════════════════════════════════════════════════════════
-# SOURCE 3 — University websites (fixed URLs + PDF detection)
+# SOURCE 3 — Universities (comprehensive list)
 # ════════════════════════════════════════════════════════════════════════════════
 UNIVERSITIES = [
-    # ── Public ──────────────────────────────────────────────────────────────
-    {"name": "BUET",              "url": "https://www.buet.ac.bd/web/#/noticeboard/vacancy",     "type": "spa"},
-    {"name": "Dhaka University",  "url": "https://www.du.ac.bd/body/notice_list/NTC"},
-    {"name": "CUET",              "url": "https://www.cuet.ac.bd/notice"},
-    {"name": "RUET",              "url": "https://www.ruet.ac.bd/all-notice-circular"},
-    {"name": "KUET",              "url": "https://www.kuet.ac.bd/index.php/notice-circulars/"},
-    {"name": "DUET",              "url": "https://duet.ac.bd/notices/"},
-    {"name": "SUST",              "url": "https://www.sust.edu/4"},
-    {"name": "JU",                "url": "https://www.juniv.edu/notice"},
-    {"name": "Rajshahi University","url": "https://www.ru.ac.bd/notice/"},
-    {"name": "Chittagong Univ",   "url": "https://cu.ac.bd/notice/"},
-    {"name": "Khulna University", "url": "https://www.ku.ac.bd/notice/"},
-    {"name": "Comilla University","url": "https://www.cou.ac.bd/notice/"},
-    {"name": "NSTU",              "url": "https://nstu.edu.bd/notice/"},
-    {"name": "PUST",              "url": "https://www.pust.ac.bd/notices/"},
-    {"name": "MBSTU",             "url": "https://www.mbstu.ac.bd/notice"},
-    {"name": "HSTU",              "url": "https://www.hstu.ac.bd/notice"},
-    {"name": "Barishal University","url":"https://barisaluniv.edu.bd/notice/"},
-    {"name": "BRUR",              "url": "https://www.brur.ac.bd/notice/"},
-    {"name": "RMSTU",             "url": "https://www.rmstu.edu.bd/notice/"},
-    {"name": "Gopalganj Sci&Tech","url": "https://bsmstu.edu.bd/notice/"},
-    {"name": "Patuakhali Sci&Tech","url":"https://pstu.ac.bd/notice/"},
-    # ── Private ─────────────────────────────────────────────────────────────
-    # BRAC blocks → use their career RSS / job feed URL
-    {"name": "BRAC University",   "url": "https://www.bracu.ac.bd/about/offices/human-resources/job-opportunities",
-                                   "alt": "https://www.bracu.ac.bd/career"},
-    # NSU — updated URL
-    {"name": "North South Univ",  "url": "https://www.northsouth.edu/administration/offices/human-resources/job-opportunities.html",
-                                   "alt": "https://www.northsouth.edu/hr/"},
-    {"name": "AIUB",              "url": "https://www.aiub.edu/career"},
-    {"name": "DIU (Daffodil)",    "url": "https://daffodilvarsity.edu.bd/article/career"},
-    {"name": "UIU",               "url": "https://www.uiu.ac.bd/career/"},
-    {"name": "EWU",               "url": "https://www.ewubd.edu/job-circular"},
-    {"name": "IUB",               "url": "https://iub.edu.bd/career"},
-    {"name": "AUST",              "url": "https://www.aust.edu/career"},
-    {"name": "Southeast Univ",    "url": "https://seu.edu.bd/career/"},
-    {"name": "Stamford Univ",     "url": "https://www.stamforduniversity.edu.bd/job-circular"},
-    {"name": "Green University",  "url": "https://green.edu.bd/career/"},
-    {"name": "Metropolitan Univ", "url": "https://metrouni.edu.bd/career"},
-    {"name": "Premier University","url": "https://www.puc.ac.bd/career/"},
-    {"name": "IUBAT",             "url": "https://iubat.edu/career/"},
-    {"name": "BGC Trust Univ",    "url": "https://bgctub.ac.bd/career/"},
-    {"name": "BAUST",             "url": "https://baust.edu.bd/career/"},
-    {"name": "Leading University","url": "https://lus.ac.bd/career/"},
-    {"name": "Sylhet Intl Univ",  "url": "https://siu.edu.bd/career/"},
-    {"name": "Manarat Intl Univ", "url": "https://manarat.ac.bd/career/"},
-    {"name": "Primeasia Univ",    "url": "https://primeasia.edu.bd/career/"},
-    {"name": "Uttara University", "url": "https://uttarauniversity.edu.bd/career/"},
-    {"name": "World University",  "url": "https://wub.edu.bd/career/"},
-    {"name": "Eastern University","url": "https://www.easternuni.edu.bd/career/"},
-    {"name": "Atish Dipankar Univ","url":"https://adust.edu.bd/career/"},
-    {"name": "Bangladesh Univ",   "url": "https://www.bu.edu.bd/job/"},
-    {"name": "City University",   "url": "https://cityuniversity.edu.bd/career/"},
-    {"name": "Shanto-Mariam Univ","url": "https://smuct.edu.bd/career/"},
-    {"name": "University of Asia Pacific","url":"https://www.uap-bd.edu/career/"},
-    {"name": "University of Development Alt.","url":"https://uda.ac.bd/career/"},
-    {"name": "University of Liberal Arts","url":"https://ulab.edu.bd/career/"},
-    {"name": "IBAIS University",  "url": "https://ibaisuniv.edu.bd/career/"},
-    {"name": "ICAB",              "url": "https://www.icab.com.bd/career/"},
+    # ── Tier 1 Private ───────────────────────────────────────────────────────
+    {"name": "North South University",         "url": "https://www.northsouth.edu/administration/offices/human-resources/job-opportunities.html"},
+    {"name": "BRAC University",                "url": "https://www.bracu.ac.bd/about/offices/human-resources/job-opportunities",
+                                                "alt": "https://career.bracu.ac.bd/"},
+    {"name": "IUB",                            "url": "https://iub.edu.bd/career"},
+    {"name": "AIUB",                           "url": "https://www.aiub.edu/career"},
+    {"name": "AUST",                           "url": "https://www.aust.edu/career"},
+    {"name": "East West University",           "url": "https://www.ewubd.edu/job-circular"},
+    {"name": "UIU",                            "url": "https://www.uiu.ac.bd/career/"},
+    {"name": "ULAB",                           "url": "https://ulab.edu.bd/career/"},
+    {"name": "Daffodil Intl University",       "url": "https://daffodilvarsity.edu.bd/article/career"},
+    {"name": "Stamford University",            "url": "https://www.stamforduniversity.edu.bd/job-circular"},
+    # ── Strong Dhaka Private ─────────────────────────────────────────────────
+    {"name": "Southeast University",           "url": "https://seu.edu.bd/career/"},
+    {"name": "Prime University",               "url": "https://www.primeuniversity.edu.bd/career/"},
+    {"name": "City University",                "url": "https://cityuniversity.edu.bd/career/"},
+    {"name": "Eastern University",             "url": "https://www.easternuni.edu.bd/career/"},
+    {"name": "Green University",               "url": "https://green.edu.bd/career/"},
+    {"name": "World University of Bangladesh", "url": "https://wub.edu.bd/career/"},
+    {"name": "Bangladesh University (BU)",     "url": "https://www.bu.edu.bd/job/"},
+    {"name": "Primeasia University",           "url": "https://primeasia.edu.bd/career/"},
+    {"name": "UODA",                           "url": "https://uda.ac.bd/career/"},
+    {"name": "Dhaka Intl University (DIU)",    "url": "https://diu.ac/career/"},
+    # ── Mid-tier active ──────────────────────────────────────────────────────
+    {"name": "Manarat Intl University",        "url": "https://manarat.ac.bd/career/"},
+    {"name": "Sonargaon University",           "url": "https://su.edu.bd/career/"},
+    {"name": "State University of Bangladesh", "url": "https://sub.edu.bd/career/"},
+    {"name": "Northern University Bangladesh", "url": "https://nub.ac.bd/career/"},
+    {"name": "Atish Dipankar Univ",           "url": "https://adust.edu.bd/career/"},
+    {"name": "BUBT",                           "url": "https://www.bubt.edu.bd/home/career"},
+    {"name": "BUP",                            "url": "https://www.bup.edu.bd/notice"},
+    {"name": "Notre Dame Univ Bangladesh",     "url": "https://ndub.edu.bd/career/"},
+    {"name": "Presidency University",          "url": "https://presidency.edu.bd/career/"},
+    # ── Public Universities ───────────────────────────────────────────────────
+    {"name": "BUET",                           "url": "https://www.buet.ac.bd/web/#/noticeboard/vacancy", "type": "spa"},
+    {"name": "Dhaka University",               "url": "https://www.du.ac.bd/body/notice_list/NTC"},
+    {"name": "CUET",                           "url": "https://www.cuet.ac.bd/notice"},
+    {"name": "RUET",                           "url": "https://www.ruet.ac.bd/all-notice-circular"},
+    {"name": "KUET",                           "url": "https://www.kuet.ac.bd/index.php/notice-circulars/"},
+    {"name": "DUET",                           "url": "https://duet.ac.bd/notices/"},
+    {"name": "SUST",                           "url": "https://www.sust.edu/4"},
+    {"name": "JU",                             "url": "https://www.juniv.edu/notice"},
+    {"name": "Rajshahi University",            "url": "https://www.ru.ac.bd/notice/"},
+    {"name": "Chittagong University",          "url": "https://cu.ac.bd/notice/"},
+    {"name": "Khulna University",              "url": "https://www.ku.ac.bd/notice/"},
+    {"name": "NSTU",                           "url": "https://nstu.edu.bd/notice/"},
+    {"name": "MBSTU",                          "url": "https://www.mbstu.ac.bd/notice"},
+    {"name": "HSTU",                           "url": "https://www.hstu.ac.bd/notice"},
+    {"name": "Barishal University",            "url": "https://barisaluniv.edu.bd/notice/"},
+    {"name": "BRUR",                           "url": "https://www.brur.ac.bd/notice/"},
 ]
 
 def scrape_university(uni):
@@ -268,9 +274,7 @@ def scrape_university(uni):
     base = "/".join(uni["url"].split("/")[:3])
 
     soup = get_html(uni["url"])
-    # try alternate URL if main fails
     if soup is None and uni.get("alt"):
-        print(f"    Trying alt URL for {uni['name']}...")
         soup = get_html(uni["alt"])
     if soup is None:
         return jobs
@@ -278,27 +282,17 @@ def scrape_university(uni):
     for a in soup.find_all("a", href=True):
         title = a.get_text(" ", strip=True)
         href  = a.get("href", "").strip()
-
-        if not href or href in ("#", "javascript:void(0)"):
-            continue
-        if len(title) < 6 or len(title) > 250:
-            continue
+        if not href or href in ("#", "javascript:void(0)"): continue
+        if len(title) < 6 or len(title) > 300: continue
 
         full_url = urljoin(base, href) if not href.startswith("http") else href
 
-        # Priority 1: Title clearly matches CSE lecturer job
-        if is_relevant(title):
-            pass
-        # Priority 2: PDF link whose URL contains faculty/recruitment keywords
-        elif href.lower().endswith(".pdf") and any(
-            k in href.lower() for k in ["faculty", "recruit", "lecturer", "appoint", "circular", "vacancy"]
-        ):
-            title = title or f"Job Circular (PDF) — {uni['name']}"
-        # Priority 3: Generic faculty post (might be CSE — user decides)
-        elif is_faculty_any_dept(title):
-            title = f"[Faculty Post] {title}"
-        else:
-            continue
+        # Strict: title must explicitly be CSE lecturer
+        if not is_strict_cse_lecturer(title):
+            # Last chance: PDF whose URL has recruitment keywords
+            if not (href.lower().endswith(".pdf") and
+                    any(k in href.lower() for k in ["lecturer", "faculty", "cse", "recruit", "vacancy"])):
+                continue
 
         jid = make_id(title, uni["name"])
         if jid in seen: continue
@@ -321,24 +315,21 @@ def main():
     print("\n📡 SOURCE 2: Google News RSS")
     all_new += scrape_google_news()
 
-    print(f"\n📡 SOURCE 3: {len(UNIVERSITIES)} University websites")
-    ok, fail = 0, 0
+    print(f"\n📡 SOURCE 3: {len(UNIVERSITIES)} Universities")
     for uni in UNIVERSITIES:
         if uni.get("type") == "spa":
-            print(f"    ⚠️  {uni['name']} is a SPA (JS-rendered), skipping")
+            print(f"    ⏭  {uni['name']} (JS-rendered, skip)")
             continue
         results = scrape_university(uni)
         if results:
             print(f"    ✅ {uni['name']}: {len(results)}")
-            ok += 1
-        else:
-            fail += 1
         all_new += results
-        time.sleep(0.4)
-    print(f"    → {ok} sites returned data, {fail} sites blocked/empty")
+        time.sleep(0.35)
 
-    # Merge
-    existing     = load_existing()
+    # ── Prune old jobs from existing data ──────────────────────────────────
+    existing = load_existing()
+    existing["jobs"] = [j for j in existing["jobs"] if is_recent(j.get("found_at", ""))]
+
     existing_ids = {j["id"] for j in existing["jobs"]}
     added = []
     for job in all_new:
@@ -348,19 +339,16 @@ def main():
             existing_ids.add(job["id"])
 
     existing["last_updated"] = datetime.utcnow().isoformat()
-    existing["jobs"]         = existing["jobs"][:500]
+    existing["jobs"]         = existing["jobs"][:300]
     save_data(existing)
 
     with open("new_jobs.json", "w", encoding="utf-8") as f:
         json.dump(added, f, ensure_ascii=False, indent=2)
 
-    print(f"\n{'='*50}")
-    print(f"✅ DONE → {len(all_new)} scraped | {len(added)} new this run")
-    print(f"{'='*50}")
-
-    if len(all_new) == 0:
-        print("\n⚠️  All sources returned 0 results.")
-        print("   Check GitHub Actions log for HTTP errors above.")
+    print(f"\n{'='*55}")
+    print(f"✅ {len(all_new)} scraped | {len(added)} NEW | "
+          f"{len(existing['jobs'])} total (last {MAX_AGE_DAYS}d)")
+    print(f"{'='*55}")
 
 if __name__ == "__main__":
     main()
