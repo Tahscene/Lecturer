@@ -271,12 +271,12 @@ def scrape_google_news():
 # SOURCE 3 — University websites
 # ════════════════════════════════════════════════════════════════════════════════
 UNIVERSITIES = [
-    # Tier 1 Private
+    # Tier 1 Private — Ahsanullah first
+    {"name": "Ahsanullah Univ (AUST)",          "url": "https://www.aust.edu/career"},
     {"name": "North South University",          "url": "https://www.northsouth.edu/administration/offices/human-resources/job-opportunities.html"},
     {"name": "BRAC University",                 "url": "https://www.bracu.ac.bd/about/offices/human-resources/job-opportunities"},
     {"name": "IUB",                             "url": "https://iub.edu.bd/career"},
     {"name": "AIUB",                            "url": "https://www.aiub.edu/career"},
-    {"name": "AUST",                            "url": "https://www.aust.edu/career"},
     {"name": "East West University",            "url": "https://www.ewubd.edu/job-circular"},
     {"name": "UIU",                             "url": "https://www.uiu.ac.bd/career/"},
     {"name": "ULAB",                            "url": "https://ulab.edu.bd/career/"},
