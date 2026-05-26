@@ -95,42 +95,18 @@ def is_bd_source(url: str) -> bool:
     url_lower = url.lower()
     return ".bd/" in url_lower or any(d in url_lower for d in BD_NEWS_DOMAINS)
 
-def is_real_job_posting(title: str, desc: str = "") -> bool:
-    """
-    title = job title (from link text or RSS title)
-    desc  = full description text (RSS desc / page snippet) — optional
-    For university page links: title only.
-    For RSS feeds: title+desc combined so we catch things like
-      title="Faculty Position - School of Data & CS"
-      desc="...Lecturer and Senior Lecturer positions available in CSE..."
-    """
-    t    = title.strip().lower()
-    full = (t + " " + desc.lower()).strip()
+def is_real_job_posting(title: str) -> bool:
+    t = title.strip().lower()
 
-    # --- hard reject nav/page links (title only) ---
+    # reject nav/page links
     for pat in REJECT_PATTERNS:
         if re.search(pat, t):
             return False
 
-    # title too long = probably a paragraph, not a job ad
+    # must be short enough to be a job title (not a paragraph)
     if len(title) > 200:
         return False
 
-    # --- for RSS feeds with description, check full combined text ---
-    if desc:
-        has_hiring = any(w in full for w in HIRING_WORDS)
-        has_cse    = any(w in full for w in CSE_WORDS)
-        # also allow "faculty position/opening" in title IF desc has lecturer+CSE
-        if not has_hiring:
-            faculty_title = any(p in t for p in ["faculty position", "faculty opening",
-                                                   "faculty vacancy", "ranked faculty",
-                                                   "open position", "job circular",
-                                                   "vacancy", "recruitment", "নিয়োগ"])
-            lecturer_desc = "lecturer" in desc.lower() or "লেকচারার" in desc.lower()
-            has_hiring = faculty_title and lecturer_desc
-        return has_hiring and has_cse
-
-    # --- for university page links (title only) ---
     has_hiring = any(w in t for w in HIRING_WORDS)
     has_cse    = any(w in t for w in CSE_WORDS)
     return has_hiring and has_cse
@@ -192,11 +168,18 @@ def parse_pub_date(raw: str) -> str:
 # ════════════════════════════════════════════════════════════════════════════════
 # SOURCE 1 — BDJobs RSS
 # ════════════════════════════════════════════════════════════════════════════════
+# BDJobs RSS (education category)
 BDJOBS_RSS_URLS = [
-    "https://jobs.bdjobs.com/rss/rss.asp?fcat=10",
-    "https://jobs.bdjobs.com/rss/rss.asp?txtsearch=lecturer+CSE",
-    "https://jobs.bdjobs.com/rss/rss.asp?txtsearch=lecturer+computer",
-    "https://jobs.bdjobs.com/rss/rss.asp?txtsearch=lecturer+information+technology",
+    "https://bdjobs.com/rss/rss.asp?fcat=10",
+    "https://jobs.bdjobs.com/rss/rss.asp?fcat=10",   # fallback
+]
+
+# BDJobs HTML search — real domain
+BDJOBS_SEARCH_URLS = [
+    "https://bdjobs.com/jobsearch.asp?txtsearch=lecturer+CSE&Country=0",
+    "https://bdjobs.com/jobsearch.asp?txtsearch=lecturer+computer+science&Country=0",
+    "https://bdjobs.com/jobsearch.asp?txtsearch=lecturer+information+technology&Country=0",
+    "https://bdjobs.com/jobsearch.asp?txtsearch=lecturer+software+engineering&Country=0",
 ]
 
 def scrape_bdjobs_rss():
@@ -215,7 +198,7 @@ def scrape_bdjobs_rss():
             pub      = (item.findtext("pubDate") or "").strip()
             combined = f"{title} {desc}"
 
-            if not is_real_job_posting(title, desc):
+            if not is_real_job_posting(combined):
                 continue
 
             found_at = parse_pub_date(pub)
@@ -236,6 +219,81 @@ def scrape_bdjobs_rss():
 
     print(f"  → {len(jobs)} valid CSE/IT lecturer jobs from BDJobs")
     return jobs
+
+
+def scrape_bdjobs_html() -> list:
+    """
+    Scrapes bdjobs.com search pages.
+    Real BDJobs job URL pattern: bdjobs.com/h/details/XXXXXXX
+    """
+    jobs, seen = [], set()
+    for url in BDJOBS_SEARCH_URLS:
+        soup = get_html(url)
+        if not soup:
+            continue
+
+        # Grab ALL links matching /h/details/ — these are real job posting links
+        all_links = soup.find_all("a", href=re.compile(r"/h/details/\d+"))
+        print(f"    {len(all_links)} job links ← {url[28:70]}")
+
+        for a in all_links:
+            title   = a.get_text(strip=True)
+            href    = a.get("href", "")
+            job_url = ("https://bdjobs.com" + href) if href.startswith("/") else href
+
+            if len(title) < 4:
+                continue
+
+            t = title.lower()
+
+            # Check: must be a lecturer/CSE posting
+            cse_in_title     = any(w in t for w in CSE_WORDS)
+            hiring_in_title  = any(w in t for w in HIRING_WORDS)
+            reject           = any(re.search(p, t) for p in REJECT_PATTERNS)
+
+            if reject:
+                continue
+
+            # Pass if: title has both hiring + CSE signals
+            # OR: title has hiring word and we'll trust BDJobs filter did CSE filtering
+            if not hiring_in_title:
+                continue
+            if not cse_in_title:
+                # Title has "lecturer" but no dept — try to get institution context
+                # BDJobs search was already filtered by CSE keyword, so allow if hiring
+                pass  # keep it — the search URL already filters CSE
+
+            # Get institution from nearby text
+            inst = "BDJobs"
+            parent = a.find_parent(["div","li","tr","article"])
+            if parent:
+                for cls in ["comp-name", "comp_name", "company", "org"]:
+                    el = parent.find(class_=re.compile(cls, re.I))
+                    if el:
+                        inst = el.get_text(strip=True)[:80]
+                        break
+                if inst == "BDJobs":
+                    # fallback: next sibling text
+                    siblings = parent.find_all("a")
+                    for s in siblings:
+                        st = s.get_text(strip=True)
+                        if st and st != title and len(st) > 3 and "/h/details/" not in s.get("href",""):
+                            inst = st[:60]
+                            break
+
+            jid = make_id(title, job_url)
+            if jid in seen: continue
+            seen.add(jid)
+
+            jobs.append({"id": jid, "title": title, "source": "BDJobs",
+                         "institution": inst, "url": job_url,
+                         "found_at": datetime.now(timezone.utc).isoformat(),
+                         "notified": False})
+        time.sleep(1)
+
+    print(f"  → {len(jobs)} from BDJobs HTML search")
+    return jobs
+
 
 # ════════════════════════════════════════════════════════════════════════════════
 # SOURCE 2 — Google News RSS (Bangladesh ONLY)
@@ -269,7 +327,7 @@ def scrape_google_news():
                 continue
 
             # STRICT: must be an actual job posting
-            if not is_real_job_posting(title, desc):
+            if not is_real_job_posting(combined):
                 continue
 
             found_at = parse_pub_date(pub)
@@ -298,7 +356,7 @@ UNIVERSITIES = [
     # Tier 1 Private — Ahsanullah first
     {"name": "Ahsanullah Univ (AUST)",          "url": "https://www.aust.edu/career"},
     {"name": "North South University",          "url": "https://www.northsouth.edu/administration/offices/human-resources/job-opportunities.html"},
-    {"name": "BRAC University",                 "url": "https://career.bracu.ac.bd/", "type": "spa"},
+    {"name": "BRAC University",                 "url": "https://www.bracu.ac.bd/about/offices/human-resources/job-opportunities"},
     {"name": "IUB",                             "url": "https://iub.edu.bd/career"},
     {"name": "AIUB",                            "url": "https://www.aiub.edu/career"},
     {"name": "East West University",            "url": "https://www.ewubd.edu/job-circular"},
@@ -346,9 +404,6 @@ UNIVERSITIES = [
 JOB_PAGE_SIGNALS = ["career", "job", "vacancy", "circular", "recruit", "notice", "নিয়োগ"]
 
 def scrape_university(uni: dict) -> list:
-    if uni.get("type") == "spa":
-        print(f"    ⏭  {uni['name']} (JS-rendered SPA — skipped)")
-        return []
     jobs, seen = [], set()
     base = "/".join(uni["url"].split("/")[:3])
     soup = get_html(uni["url"])
@@ -364,8 +419,13 @@ def scrape_university(uni: dict) -> list:
 
         full_url = urljoin(base, href) if not href.startswith("http") else href
 
-        # STRICT check on title
+        # Strict check on title (university pages)
         if not is_real_job_posting(title):
+            continue
+        # Extra: reject pure department/program pages even if they slipped through
+        url_low = full_url.lower()
+        if any(skip in url_low for skip in ["/faculty-members", "/faculty-list",
+                                             "/all-faculty", "/our-faculty"]):
             continue
 
         jid = make_id(title, uni["name"])
@@ -386,6 +446,8 @@ def main():
 
     print("\n📡 SOURCE 1: BDJobs RSS")
     all_new += scrape_bdjobs_rss()
+    print("\n📡 SOURCE 1b: BDJobs HTML Search (catches RSS misses)")
+    all_new += scrape_bdjobs_html()
 
     print("\n📡 SOURCE 2: Google News (BD only)")
     all_new += scrape_google_news()
