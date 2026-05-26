@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "36e080a022f3",
+    "title": "Associate Professor CSE",
+    "source": "UIU",
+    "institution": "UIU",
+    "url": "https://www.uiu.ac.bd/career/associate-professor-cse-262/",
+    "found_at": "2026-05-26T15:00:48.622197+00:00",
+    "notified": false
+  },
+  {
+    "id": "caa4167d32ca",
+    "title": "Assistant Professor CSE",
+    "source": "UIU",
+    "institution": "UIU",
+    "url": "https://www.uiu.ac.bd/career/assistant-professor-cse-262/",
+    "found_at": "2026-05-26T15:00:48.622261+00:00",
+    "notified": false
+  }
+]
