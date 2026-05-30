@@ -6,69 +6,43 @@
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,700;1,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--em:#059669;--pk:#db2777;--bg:#fafaf8;--card:#fff;--border:#e5e7eb;--text:#111;--muted:#6b7280;--r:14px}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#111;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(circle,#05966914 1.2px,transparent 1.2px);background-size:26px 26px}
 .bar{height:3px;background:linear-gradient(90deg,#059669,#db2777,#059669);background-size:200%;animation:bar 3s linear infinite}
 @keyframes bar{to{background-position:200%}}
 .page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 1.25rem 4rem}
-header{text-align:center;padding:2.5rem 1rem 1.8rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
-.pill{display:inline-flex;align-items:center;gap:5px;border:1.5px solid #05966930;background:#f0fdf4;border-radius:99px;padding:.28rem .9rem;font-size:.7rem;font-weight:600;color:var(--em);text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem}
-h1{font-family:'Lora',serif;font-size:clamp(1.7rem,4.5vw,2.7rem);font-weight:700;line-height:1.2;margin-bottom:.6rem}
-h1 em{font-style:italic;background:linear-gradient(135deg,var(--em),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.sub{font-size:.88rem;color:var(--muted);margin-bottom:1.3rem;line-height:1.6}
+header{text-align:center;padding:3rem 1rem 2rem;border-bottom:1px solid #e5e7eb;margin-bottom:2rem}
+.pill{display:inline-flex;align-items:center;gap:5px;border:1.5px solid #05966930;background:#f0fdf4;border-radius:99px;padding:.28rem .9rem;font-size:.7rem;font-weight:600;color:#059669;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem}
+h1{font-family:'Lora',serif;font-size:clamp(1.7rem,4.5vw,2.8rem);font-weight:700;line-height:1.2;margin-bottom:.6rem}
+h1 em{font-style:italic;background:linear-gradient(135deg,#059669,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:.88rem;color:#6b7280;margin-bottom:1.5rem;line-height:1.6}
 .stats{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.38rem .9rem;font-size:.78rem;color:var(--muted)}
-.stat b{color:var(--em);font-weight:600}
-.tabs{display:flex;gap:0;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:1.25rem}
-.tab{flex:1;text-align:center;padding:.5rem;font-size:.83rem;font-weight:500;border-radius:10px;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:inherit;transition:all .15s}
-.tab.on{background:linear-gradient(135deg,var(--em),#10b981);color:#fff;font-weight:600}
-.panel{display:none}.panel.show{display:block}
-.sbox{display:flex;gap:.5rem;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:.5rem .5rem .5rem 1rem;margin-bottom:.7rem;transition:border-color .2s}
-.sbox:focus-within{border-color:var(--em)}
-.sbox input{flex:1;border:none;outline:none;font-family:inherit;font-size:.9rem;color:var(--text);background:transparent}
+.stat{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:.38rem .9rem;font-size:.78rem;color:#6b7280;box-shadow:0 1px 4px #0000000a}
+.stat b{color:#059669;font-weight:600}
+.toolbar{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.8rem}
+.sbox{display:flex;gap:.5rem;align-items:center;background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;padding:.5rem .5rem .5rem 1rem;box-shadow:0 2px 8px #05966910;transition:border-color .2s}
+.sbox:focus-within{border-color:#059669}
+.sbox input{flex:1;border:none;outline:none;font-family:inherit;font-size:.9rem;color:#111;background:transparent}
 .sbox input::placeholder{color:#9ca3af}
-.btn-p{background:linear-gradient(135deg,var(--em),#10b981);color:#fff;border:none;border-radius:10px;padding:.55rem 1.3rem;font-family:inherit;font-size:.86rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s}
-.btn-p:hover{opacity:.88}.btn-p:disabled{opacity:.5;cursor:not-allowed}
-.btn-o{background:var(--card);border:1.5px solid var(--border);color:var(--muted);border-radius:10px;padding:.52rem 1rem;font-family:inherit;font-size:.83rem;cursor:pointer;transition:all .15s}
-.btn-o:hover{border-color:var(--em);color:var(--em)}
-.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem}
-.chip{border:1px solid var(--border);background:var(--card);border-radius:99px;padding:.22rem .8rem;font-size:.72rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
-.chip:hover{border-color:var(--em);color:var(--em);background:#f0fdf4}
-.chip.on{background:var(--em);border-color:var(--em);color:#fff}
-.status{display:flex;align-items:center;gap:.5rem;font-size:.77rem;color:var(--muted);min-height:20px;margin-bottom:.6rem}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--em);flex-shrink:0;animation:pulse 1.2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.9rem;margin-bottom:3rem}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;cursor:pointer;transition:border-color .2s,transform .18s,box-shadow .18s}
-.card:hover{border-color:var(--em);transform:translateY(-2px);box-shadow:0 8px 24px #05966912}
+.clr{background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:.35rem .85rem;font-size:.78rem;color:#6b7280;cursor:pointer;font-family:inherit}
+.clr:hover{background:#e5e7eb}
+.chips{display:flex;gap:.45rem;flex-wrap:wrap}
+.chip{border:1px solid #e5e7eb;background:#fff;border-radius:99px;padding:.25rem .85rem;font-size:.75rem;font-weight:500;color:#6b7280;cursor:pointer;transition:all .15s;font-family:inherit}
+.chip.on{background:#059669;border-color:#059669;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.9rem;margin-bottom:4rem}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:1.2rem;cursor:pointer;transition:border-color .2s,transform .18s,box-shadow .18s;box-shadow:0 1px 4px #0000000a}
+.card:hover{border-color:#059669;transform:translateY(-2px);box-shadow:0 8px 24px #05966912}
 .ch{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap}
-.badge{color:#fff;font-size:.65rem;font-weight:700;padding:.17rem .58rem;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
+.badge{color:#fff;font-size:.66rem;font-weight:700;padding:.17rem .6rem;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
 .dl{font-size:.7rem;font-weight:600;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:.12rem .45rem}
-.ago{font-size:.72rem;color:#9ca3af;margin-left:auto}
-.card h3{font-size:.93rem;font-weight:600;line-height:1.4;margin-bottom:.35rem}
-.inst{font-size:.82rem;color:var(--muted);margin-bottom:.9rem}
-.vbtn{display:inline-block;background:linear-gradient(135deg,var(--em),var(--pk));color:#fff;text-decoration:none;font-size:.77rem;font-weight:600;padding:.3rem .85rem;border-radius:8px;float:right;transition:opacity .15s}
-.vbtn:hover{opacity:.85}
-.empty{text-align:center;color:#9ca3af;padding:3rem 1rem;grid-column:1/-1;font-size:.9rem;line-height:2}
-.tg-box{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:1.3rem;margin-bottom:1rem}
-.tg-box h3{font-size:1rem;font-weight:600;margin-bottom:.3rem}
-.tg-box p{font-size:.83rem;color:var(--muted);margin-bottom:1rem;line-height:1.6}
-.field{margin-bottom:.85rem}
-.field label{display:block;font-size:.78rem;font-weight:600;margin-bottom:.35rem}
-.field input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:.55rem .9rem;font-size:.83rem;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s;font-family:inherit}
-.field input:focus{border-color:var(--em)}
-.field input::placeholder{color:#9ca3af}
-.tg-btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.75rem}
-.steps{background:#f0fdf4;border:1px solid #d1fae5;border-radius:10px;padding:.9rem 1.1rem;font-size:.8rem;color:var(--muted);line-height:2.1}
-.steps ol{padding-left:1.2rem}
-.steps b{color:var(--em)}
-.steps code{background:#e6f7ef;color:var(--em);border-radius:4px;padding:.1rem .35rem;font-size:.77rem}
-.msg{padding:.55rem 1rem;border-radius:10px;font-size:.8rem;margin-top:.75rem;display:none}
-.msg.ok{background:#f0fdf4;color:var(--em);border:1px solid #d1fae5;display:block}
-.msg.err{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;display:block}
-footer{text-align:center;padding:1.5rem;border-top:1px solid var(--border);color:#9ca3af;font-size:.76rem;margin-top:1rem;position:relative;z-index:1}
-footer a{color:var(--em);text-decoration:none}
+.ago{font-size:.73rem;color:#9ca3af;margin-left:auto}
+.card h3{font-size:.93rem;font-weight:600;line-height:1.4;color:#111;margin-bottom:.35rem}
+.inst{font-size:.82rem;color:#6b7280;margin-bottom:.9rem}
+.btn{display:inline-block;background:linear-gradient(135deg,#059669,#db2777);color:#fff;text-decoration:none;font-size:.77rem;font-weight:600;padding:.3rem .85rem;border-radius:8px;transition:opacity .15s;float:right}
+.btn:hover{opacity:.85}
+.empty{text-align:center;color:#9ca3af;padding:4rem 2rem;grid-column:1/-1;font-size:.95rem}
+footer{text-align:center;padding:1.5rem;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:.77rem;position:relative;z-index:1}
+footer a{color:#059669;text-decoration:none}
 </style>
 </head>
 <body>
@@ -77,168 +51,34 @@ footer a{color:var(--em);text-decoration:none}
 <header>
   <div class="pill">🎓 CSE & IT · Bangladesh</div>
   <h1>Hello Ma'am,<br><em>Find Lecturer Jobs Before Others</em> ✨</h1>
-  <p class="sub">Only <b>CSE & IT Lecturer</b> positions — auto-fetched every 2 hours from BDJobs + 50+ universities</p>
+  <p class="sub">Only <strong>CSE & IT Lecturer</strong> positions — auto-fetched every 2 hours</p>
   <div class="stats">
-    <div class="stat">Stored: <b id="jcount">—</b></div>
-    <div class="stat">Updated: <b id="upd">—</b></div>
+    <div class="stat">Active: <b>0</b></div>
+    <div class="stat">Updated: <b>2026-05-30 05:55 UTC</b></div>
     <div class="stat"><b>50+</b> universities</div>
     <div class="stat">Every <b>2 hrs</b></div>
   </div>
 </header>
-<div class="tabs">
-  <button class="tab on" onclick="sw('stored',this)">📋 Stored Jobs</button>
-  <button class="tab" onclick="sw('search',this)">🔍 Live AI Search</button>
-  <button class="tab" onclick="sw('telegram',this)">📱 Telegram</button>
-</div>
-
-<!-- STORED -->
-<div id="p-stored" class="panel show">
-  <div class="sbox"><input id="sq" type="text" placeholder="Search stored jobs..." oninput="sfilt()"/><button class="btn-o" onclick="document.getElementById('sq').value='';sfilt()">Clear</button></div>
+<div class="toolbar">
+  <div class="sbox">
+    <input id="q" type="text" placeholder="Search by title or university..." oninput="filt()"/>
+    <button class="clr" onclick="document.getElementById('q').value='';filt()">Clear</button>
+  </div>
   <div class="chips" id="chips"></div>
-  <div class="grid" id="sgrid"><p class="empty">Loading jobs...</p></div>
 </div>
-
-<!-- LIVE SEARCH -->
-<div id="p-search" class="panel">
-  <div class="sbox"><input id="aq" type="text" placeholder="e.g. BRAC lecturer CSE 2026..." value="CSE IT lecturer job circular Bangladesh university 2026" onkeydown="if(event.key==='Enter')doAI()"/><button class="btn-p" id="aiBtn" onclick="doAI()">🔍 Search</button></div>
-  <div class="chips">
-    <button class="chip" onclick="aq('BRAC University lecturer CSE circular 2026')">BRAC</button>
-    <button class="chip" onclick="aq('North South University NSU lecturer CSE IT 2026')">NSU</button>
-    <button class="chip" onclick="aq('AIUB lecturer CSE information technology 2026')">AIUB</button>
-    <button class="chip" onclick="aq('UIU United International University lecturer CSE 2026')">UIU</button>
-    <button class="chip" onclick="aq('EWU East West University lecturer CSE 2026')">EWU</button>
-    <button class="chip" onclick="aq('Daffodil DIU lecturer CSE computer science 2026')">DIU</button>
-    <button class="chip" onclick="aq('AUST Ahsanullah lecturer CSE 2026')">AUST</button>
-    <button class="chip" onclick="aq('bdjobs lecturer CSE computer science Bangladesh 2026 deadline')">📋 BDJobs</button>
-  </div>
-  <div class="status" id="aiSt"></div>
-  <div class="grid" id="agrid"></div>
+<div class="grid" id="grid"><p class="empty">No active circulars right now — check back soon!</p></div>
+<footer>Made with 💚 & 💗 · Auto-updates via GitHub Actions · <a href="https://github.com" target="_blank">Source</a></footer>
 </div>
-
-<!-- TELEGRAM -->
-<div id="p-telegram" class="panel">
-  <div class="tg-box">
-    <h3>📱 Telegram Setup</h3>
-    <p>Enter your credentials. Click <b>Send Test</b> to verify, then <b>Search & Notify</b> to get jobs sent to Telegram.</p>
-    <div class="field"><label>Bot Token</label><input id="tgT" placeholder="7123456789:AAFxxxxxxxxxx"/></div>
-    <div class="field"><label>Chat ID</label><input id="tgC" placeholder="123456789"/></div>
-    <div id="tgMsg"></div>
-    <div class="tg-btns">
-      <button class="btn-o" onclick="tgTest()">📤 Send Test</button>
-      <button class="btn-p" onclick="tgNotify()">🔍 Search & Notify</button>
-      <button class="btn-o" onclick="tgSave()">💾 Save</button>
-    </div>
-  </div>
-  <div class="tg-box">
-    <h3>⚙️ How to get Token & Chat ID</h3>
-    <div class="steps"><ol>
-      <li>Telegram → search <b>@BotFather</b> → send <code>/newbot</code></li>
-      <li>Give a name → get your <b>Bot Token</b></li>
-      <li>Send <code>/start</code> to your new bot</li>
-      <li>Open in browser: <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code></li>
-      <li>Find <code>"chat":{"id":123456789}</code> → that number = <b>Chat ID</b></li>
-      <li>Paste both above → click <b>Save</b></li>
-    </ol></div>
-  </div>
-</div>
-</div>
-<footer>Made with 💚 & 💗 &nbsp;·&nbsp; Auto-updates via GitHub Actions &nbsp;·&nbsp; <a href="https://github.com" target="_blank">Source</a></footer>
-
 <script>
-const API="https://api.anthropic.com/v1/messages";
-const SRC_C={"BDJobs":"#059669","Google News":"#db2777"};
-
-function sw(id,btn){
-  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("show"));
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("on"));
-  document.getElementById("p-"+id).classList.add("show");
-  btn.classList.add("on");
-}
-
-function tAgo(iso){
-  try{
-    const d=(new Date()-new Date(iso))/1000;
-    if(d<60)return"Just now";
-    if(d<3600)return Math.floor(d/60)+"m ago";
-    if(d<86400)return Math.floor(d/3600)+"h ago";
-    if(d<604800)return Math.floor(d/86400)+"d ago";
-    return Math.floor(d/604800)+"w ago";
-  }catch{return""}
-}
-
-function mkCard(j){
-  const c=SRC_C[j.source]||"#7c3aed";
-  const dl=j.deadline&&j.deadline!=="N/A"?`<span class="dl">⏰ ${j.deadline}</span>`:"";
-  return`<div class="card" onclick="window.open('${j.url}','_blank')">
-  <div class="ch"><span class="badge" style="background:${c}">${j.source||"BDJobs"}</span>${dl}<span class="ago">${tAgo(j.found_at||j.posted||"")}</span></div>
-  <h3>${j.title}</h3>
-  <p class="inst">🏫 ${j.institution||j.company||""}${j.department?" · "+j.department:""}</p>
-  <a class="vbtn" href="${j.url}" target="_blank" onclick="event.stopPropagation()">View Circular →</a>
-  </div>`;
-}
-
-let allJ=[],actS=null;
-async function loadStored(){
-  try{
-    const r=await fetch("jobs.json?t="+Date.now());
-    const data=await r.json();
-    const jobs=data.jobs||[];
-    document.getElementById("jcount").textContent=jobs.length;
-    document.getElementById("upd").textContent=(data.last_updated||"").slice(0,16).replace("T"," ")+" UTC"||"—";
-    allJ=jobs;
-    const PRIO=["Ahsanullah Univ (AUST)","North South University","BRAC University","AIUB","IUB","East West University","UIU","ULAB","Daffodil Intl University","Stamford University","BDJobs","Google News"];
-    const srcs=[...new Set(jobs.map(j=>j.source))].sort((a,b)=>{const ai=PRIO.indexOf(a),bi=PRIO.indexOf(b);if(ai>-1&&bi>-1)return ai-bi;if(ai>-1)return-1;if(bi>-1)return 1;return a.localeCompare(b)});
-    const el=document.getElementById("chips");el.innerHTML="";
-    ["All",...srcs].forEach(s=>{const b=document.createElement("button");b.className="chip"+(actS===null&&s==="All"||actS===s?" on":"");b.textContent=s;b.onclick=()=>{actS=s==="All"?null:s;[...el.children].forEach(x=>x.classList.toggle("on",x.textContent===s||(s==="All"&&x.textContent==="All")));sfilt()};el.appendChild(b)});
-    sfilt();
-  }catch{document.getElementById("sgrid").innerHTML='<p class="empty">Run the GitHub Action first to populate jobs.</p>'}
-}
-function sfilt(){
-  const q=(document.getElementById("sq").value||"").toLowerCase();
-  const vis=allJ.filter(j=>(!q||(j.title+" "+j.institution+" "+j.source).toLowerCase().includes(q))&&(actS===null||j.source===actS));
-  document.getElementById("sgrid").innerHTML=vis.length?vis.map(mkCard).join(""):'<p class="empty">No results.</p>';
-}
-
-function aq(q){sw("search",document.querySelectorAll(".tab")[1]);document.getElementById("aq").value=q;doAI()}
-function setAISt(msg,loading=false){const el=document.getElementById("aiSt");el.innerHTML=msg?(loading?`<div class="dot"></div><span>${msg}</span>`:`<span>${msg}</span>`):""}
-async function doAI(){
-  const q=document.getElementById("aq").value.trim();if(!q)return;
-  const btn=document.getElementById("aiBtn");btn.disabled=true;btn.textContent="Searching...";
-  document.getElementById("agrid").innerHTML="";
-  setAISt("Searching BDJobs + universities in real-time...",true);
-  try{
-    const res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:2000,
-        tools:[{type:"web_search_20250305",name:"web_search"}],
-        system:`Find REAL current CSE/IT Lecturer jobs in Bangladesh. Return ONLY raw JSON array. Fields: title,institution,department,deadline,posted,url,source. Rules: only Lecturer/Senior Lecturer, only CSE/IT/Computer Science, only Bangladesh, real URLs, max 10. Return [] if none.`,
-        messages:[{role:"user",content:`Search: ${q}\nReturn JSON array only.`}]})});
-    const data=await res.json();
-    const text=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
-    const m=text.match(/\[[\s\S]*\]/);
-    const jobs=m?JSON.parse(m[0]).filter(j=>j.url&&j.url.startsWith("http")):[];
-    setAISt(jobs.length?`${jobs.length} result${jobs.length>1?"s":""} found`:"No results. Try a specific university chip.");
-    document.getElementById("agrid").innerHTML=jobs.length?jobs.map(mkCard).join(""):'<p class="empty">No current CSE/IT Lecturer positions found.<br>Try a specific university chip above.</p>';
-  }catch(e){setAISt("Search failed. Try again.")}
-  btn.disabled=false;btn.textContent="🔍 Search";
-}
-
-function tgSave(){const t=document.getElementById("tgT").value.trim(),c=document.getElementById("tgC").value.trim();if(!t||!c){showM("Enter both fields","err");return}localStorage.setItem("tg_t",t);localStorage.setItem("tg_c",c);showM("✅ Saved!","ok")}
-function loadTg(){const t=localStorage.getItem("tg_t"),c=localStorage.getItem("tg_c");if(t)document.getElementById("tgT").value=t;if(c)document.getElementById("tgC").value=c}
-function showM(msg,type){const el=document.getElementById("tgMsg");el.textContent=msg;el.className="msg "+type;setTimeout(()=>el.className="msg",4000)}
-async function tgSnd(t,c,txt){try{const r=await fetch(`https://api.telegram.org/bot${t}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:c,text:txt,parse_mode:"HTML",disable_web_page_preview:false})});return r.ok}catch{return false}}
-async function tgTest(){const t=document.getElementById("tgT").value.trim(),c=document.getElementById("tgC").value.trim();if(!t||!c){showM("Enter Token and Chat ID","err");return}const ok=await tgSnd(t,c,"✅ <b>CSE Lecturer Tracker</b>\n\nTelegram working! 🎉 You'll get alerts for new jobs.");showM(ok?"✅ Test sent to Telegram!":"❌ Failed — check token/chat ID",ok?"ok":"err")}
-async function tgNotify(){
-  const t=document.getElementById("tgT").value.trim(),c=document.getElementById("tgC").value.trim();
-  if(!t||!c){showM("Enter Token and Chat ID","err");return}
-  showM("🔍 Fetching jobs...","ok");
-  try{const r=await fetch("jobs.json?t="+Date.now());const data=await r.json();const jobs=(data.jobs||[]).slice(0,5);
-  if(!jobs.length){showM("No stored jobs yet. Run the Action first.","err");return}
-  let sent=0;
-  for(const j of jobs){const msg=`🎓 <b>CSE/IT Lecturer Job</b>\n\n📌 <b>${j.title}</b>\n🏫 ${j.institution}${j.deadline?"\n⏰ Deadline: "+j.deadline:""}\n🔗 <a href="${j.url}">View Circular →</a>`;if(await tgSnd(t,c,msg))sent++;await new Promise(x=>setTimeout(x,700))}
-  showM(`✅ Sent ${sent} alert${sent!==1?"s":""} to Telegram!`,"ok")}catch(e){showM("Error: "+e.message,"err")}
-}
-
-loadStored();loadTg();
+const cards=[...document.querySelectorAll('.card')];
+const PRIO=["Ahsanullah Univ (AUST)","North South University","BRAC University","AIUB","IUB","East West University","UIU","ULAB","Daffodil Intl University","Stamford University","BDJobs","Google News"];
+const rawSrc=[...new Set(cards.map(c=>c.querySelector('.badge').textContent))];
+const srcs=rawSrc.sort((a,b)=>{const ai=PRIO.indexOf(a),bi=PRIO.indexOf(b);if(ai>-1&&bi>-1)return ai-bi;if(ai>-1)return -1;if(bi>-1)return 1;return a.localeCompare(b)});
+let act=null;
+const el=document.getElementById('chips');
+function buildChips(){el.innerHTML='';['All',...srcs].forEach(s=>{const b=document.createElement('button');b.className='chip'+(act===null&&s==='All'||act===s?' on':'');b.textContent=s;b.onclick=()=>{act=s==='All'?null:s;buildChips();filt()};el.appendChild(b)})}
+function filt(){const q=document.getElementById('q').value.toLowerCase();cards.forEach(c=>{const t=c.innerText.toLowerCase(),s=c.querySelector('.badge').textContent;c.style.display=(!q||t.includes(q))&&(act===null||s===act)?'':'none'})}
+buildChips();
 setTimeout(()=>location.reload(),30*60*1000);
 </script>
 </body>
