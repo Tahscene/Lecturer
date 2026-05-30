@@ -81,19 +81,24 @@ REJECT_DEPT_PATTERNS = [
 
 # ── Hard reject position/page types ──────────────────────────────────────────
 REJECT_TYPE = [
-    "professor",        # catches assistant/associate/visiting professor
+    "professor",            # catches assistant/associate/visiting professor
     "visiting faculty",
     "faculty list",
     "faculty members",
     "faculty of ",
     "faculty profile",
     "faculty & ",
+    "faculty positions open",  # "Faculty Positions Open at UIU"
     "we are hiring",
     "now hiring",
     "join our team",
     "current vacancies",
     "open positions",
     "career opportunities",
+    "apply for the position",  # generic apply link
+    "non-technical",           # non-teaching staff ads
+    "interview notice",
+    "interview schedule",
 ]
 
 # ── Reject noisy/untrusted sources ───────────────────────────────────────────
@@ -167,10 +172,10 @@ def deadline_is_past(text):
         "jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12
     }
     today = datetime.now(timezone.utc).date()
+    # Named month patterns: "2 May 2026", "May 01, 2026", "01-May-2026"
     patterns = [
-        r"(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s,]+(\d{4})",
-        r"(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{1,2}),?\s+(\d{4})",
-        r"deadline[:\s]+(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s,]+(\d{4})",
+        r"(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s,\-]+(\d{4})",
+        r"(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s,\-]+(\d{1,2}),?\s*(\d{4})",
     ]
     for pat in patterns:
         m = re.search(pat, text.lower())
@@ -185,6 +190,15 @@ def deadline_is_past(text):
                     return True
             except:
                 pass
+    # Numeric date: DD/MM/YYYY
+    for m in re.finditer(r"(\d{1,2})/(\d{1,2})/(\d{4})", text):
+        try:
+            d, mo, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+            if 1 <= mo <= 12 and 1 <= d <= 31:
+                if datetime(y, mo, d).date() < today:
+                    return True
+        except:
+            pass
     return False
 
 def is_valid_job(title, desc="", url="", is_bdjobs=False):
@@ -356,6 +370,9 @@ def scrape_serper():
                 if source is None:
                     continue
 
+                # hotjobs.bdjobs.com pages are just "University Name" — no position info
+                if "hotjobs" in url.lower() and not has_lecturer(clean):
+                    continue
                 is_bdj = "bdjobs.com" in url.lower()
                 if not is_valid_job(clean, snippet, url, is_bdjobs=is_bdj):
                     continue
