@@ -1,4 +1,25 @@
 {
-  "jobs": [],
-  "last_updated": "2026-05-30T06:16:00.042591+00:00"
+  "jobs": [
+    {
+      "id": "b1c4d497009c",
+      "title": "Assistant Professor CSE",
+      "institution": "UIU",
+      "source": "UIU",
+      "url": "https://www.uiu.ac.bd/career/assistant-professor-cse-262/",
+      "deadline": "",
+      "found_at": "2026-05-30T06:47:18.691680+00:00",
+      "notified": false
+    },
+    {
+      "id": "00702277de8d",
+      "title": "Associate Professor CSE",
+      "institution": "UIU",
+      "source": "UIU",
+      "url": "https://www.uiu.ac.bd/career/associate-professor-cse-262/",
+      "deadline": "",
+      "found_at": "2026-05-30T06:47:18.691643+00:00",
+      "notified": false
+    }
+  ],
+  "last_updated": "2026-05-30T06:47:38.067395+00:00"
 }
