@@ -1,6 +1,26 @@
 {
   "jobs": [
     {
+      "id": "e52e79f759f6",
+      "title": "BRAC University - Senior Lecturer - Jobs",
+      "institution": "BDJobs",
+      "source": "BDJobs",
+      "url": "https://jobs.bdjobs.com/jobdetails.asp?id=1491599&type=new",
+      "deadline": "",
+      "found_at": "2026-05-25T15:08:43.614975+00:00",
+      "notified": false
+    },
+    {
+      "id": "cc69bbfaebea",
+      "title": "Lecturer, Dept of Computer Science and Engineering (CSE), FSSH",
+      "institution": "BDJobs",
+      "source": "BDJobs",
+      "url": "https://jobs.bdjobs.com/jobdetails/?id=1487738&type=new",
+      "deadline": "12 Jun 2026",
+      "found_at": "2026-05-30T15:08:39.992028+00:00",
+      "notified": false
+    },
+    {
       "id": "6bf1ab39ee9a",
       "title": "ATIKA AKTER - Bangladesh University of Professionals",
       "institution": "Web",
@@ -201,5 +221,5 @@
       "notified": false
     }
   ],
-  "last_updated": "2026-05-30T14:19:49.270235+00:00"
+  "last_updated": "2026-05-30T15:09:34.115214+00:00"
 }
