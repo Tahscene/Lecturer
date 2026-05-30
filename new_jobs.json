@@ -1,22 +1,52 @@
 [
   {
-    "id": "cc69bbfaebea",
-    "title": "Lecturer, Dept of Computer Science and Engineering (CSE), FSSH",
+    "id": "871122a66da7",
+    "title": "Lecturer : Scholars` School & College - Jobs",
     "institution": "BDJobs",
     "source": "BDJobs",
-    "url": "https://jobs.bdjobs.com/jobdetails/?id=1487738&type=new",
-    "deadline": "12 Jun 2026",
-    "found_at": "2026-05-30T15:08:39.992028+00:00",
+    "url": "https://jobs.bdjobs.com/jobdetails/?id=1489684&fcatId=4&ln=1",
+    "deadline": "",
+    "found_at": "2026-05-30T17:07:20.619814+00:00",
     "notified": false
   },
   {
-    "id": "e52e79f759f6",
-    "title": "BRAC University - Senior Lecturer - Jobs",
+    "id": "ec225066535f",
+    "title": "Lecturer (Department of CSE) : Bangladesh University - Jobs",
     "institution": "BDJobs",
     "source": "BDJobs",
-    "url": "https://jobs.bdjobs.com/jobdetails.asp?id=1491599&type=new",
+    "url": "https://jobs.bdjobs.com/jobdetails/?id=1487938&fcatId=4&ln=1",
+    "deadline": "08 Jun 2026",
+    "found_at": "2026-05-30T17:07:20.619907+00:00",
+    "notified": false
+  },
+  {
+    "id": "75050e57e0bc",
+    "title": "BRAC University - Senior Lecturer",
+    "institution": "BDJobs",
+    "source": "BDJobs",
+    "url": "https://bdjobs.com/h/details/1491599?ln=1",
+    "deadline": "12 Jun 2026",
+    "found_at": "2026-05-25T17:07:21.821433+00:00",
+    "notified": false
+  },
+  {
+    "id": "7b699473e0fc",
+    "title": "Leadership for Corporate Success - Dhaka",
+    "institution": "BDJobs",
+    "source": "BDJobs",
+    "url": "https://elearning-dev.bdjobs.com/trainingdetails.asp?trainingid=98584&upcoming=0",
     "deadline": "",
-    "found_at": "2026-05-25T15:08:43.614975+00:00",
+    "found_at": "2026-05-30T17:07:21.821859+00:00",
+    "notified": false
+  },
+  {
+    "id": "53766e8d6fe8",
+    "title": "Md Tanzim Hossain Lecturer - World University of Bangladesh",
+    "institution": "Web",
+    "source": "Web",
+    "url": "https://cse.wub.edu.bd/main/faculty_member_details/925",
+    "deadline": "",
+    "found_at": "2026-05-30T17:07:36.335853+00:00",
     "notified": false
   }
 ]
