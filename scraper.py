@@ -1,52 +1,66 @@
 """
-BD CSE Lecturer Job Tracker — Claude AI Web Search Version
-Uses Anthropic API to search — never gets blocked.
-Requires: ANTHROPIC_API_KEY in GitHub Secrets
+BD CSE Lecturer Job Tracker — Serper.dev Free API Version
+Serper.dev: 2500 free searches/month, no credit card needed
+Sign up: serper.dev → Get API Key (free)
+Add to GitHub Secrets: SERPER_API_KEY
 """
 
-import requests, json, os, hashlib
+import requests, json, os, hashlib, re, time
 from datetime import datetime, timezone, timedelta
 
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-TELEGRAM_TOKEN    = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_CHAT_ID  = os.environ.get("TELEGRAM_CHAT_ID", "")
-DATA_FILE         = "docs/jobs.json"
+SERPER_KEY     = os.environ.get("SERPER_API_KEY", "")
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT  = os.environ.get("TELEGRAM_CHAT_ID", "")
+DATA_FILE      = "docs/jobs.json"
 
-SEARCH_QUERIES = [
-    "lecturer CSE computer science job circular Bangladesh university 2026 deadline",
-    "lecturer information technology IT Bangladesh university job circular 2026",
-    "BRAC NSU AIUB UIU EWU IUB AUST DIU lecturer CSE job circular 2026",
-    "site:bdjobs.com lecturer CSE computer science Bangladesh 2026",
+SEARCHES = [
+    "lecturer CSE computer science Bangladesh university job circular 2026 deadline",
+    "lecturer information technology IT Bangladesh university circular 2026",
+    "BRAC NSU AIUB UIU EWU lecturer CSE job circular 2026",
+    "site:bdjobs.com lecturer CSE OR \"computer science\" Bangladesh 2026",
     "site:thefinancialexpress.com lecturer CSE university Bangladesh 2026",
+    "site:thedailystar.net lecturer CSE university Bangladesh 2026",
 ]
 
-SYSTEM_PROMPT = """You are a job search assistant for Bangladesh universities.
-Search the web and find REAL, CURRENT CSE/IT Lecturer job postings in Bangladesh.
-
-Return ONLY a valid JSON array. No markdown, no explanation.
-Each object must have exactly:
-{
-  "title": "exact job title from the posting",
-  "institution": "university name",
-  "deadline": "deadline date e.g. 12 Jun 2026 or N/A",
-  "url": "direct URL to the job posting (must be real, start with http)",
-  "source": "BDJobs or university name or news source",
-  "posted": "posted/published date or empty string"
-}
-
-STRICT RULES:
-1. Position must be LECTURER or SENIOR LECTURER only (not professor, not admin)
-2. Department must be CSE, Computer Science, Information Technology, or Software Engineering
-3. University must be in Bangladesh
-4. URL must be a real, working link (not homepage, not made up)
-5. Job must currently be accepting applications (deadline not passed)
-6. Maximum 15 results
-7. If no real jobs found, return []
-"""
+LECTURER_KW = ["lecturer", "senior lecturer", "লেকচারার"]
+CSE_KW = ["computer science", "cse", "information technology", " it ",
+          "software engineering", "computing", "ict", "কম্পিউটার"]
+REJECT = ["professor", "india", "admission", "result", "scholarship",
+          "united states", "uk ", "australia", "canada"]
 
 
-def make_id(title, url):
-    return hashlib.md5(f"{title.lower()}{url[:30]}".encode()).hexdigest()[:12]
+def is_valid(text):
+    t = text.lower()
+    if any(r in t for r in REJECT): return False
+    return any(l in t for l in LECTURER_KW) and any(c in t for c in CSE_KW)
+
+
+def make_id(url):
+    return hashlib.md5(url.encode()).hexdigest()[:12]
+
+
+def google_search(query):
+    """Search Google via Serper.dev API — free 2500/month."""
+    if not SERPER_KEY:
+        print("  ❌ No SERPER_API_KEY — add it to GitHub Secrets")
+        return []
+    try:
+        r = requests.post(
+            "https://google.serper.dev/search",
+            headers={"X-API-KEY": SERPER_KEY, "Content-Type": "application/json"},
+            json={"q": query, "gl": "bd", "hl": "en", "num": 10},
+            timeout=15
+        )
+        if r.status_code != 200:
+            print(f"  ❌ Serper error: {r.status_code}")
+            return []
+        data = r.json()
+        results = data.get("organic", [])
+        print(f"  ✅ {len(results)} results")
+        return results
+    except Exception as e:
+        print(f"  ❌ {e}")
+        return []
 
 
 def load_existing():
@@ -62,71 +76,14 @@ def save_data(data):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def search_with_claude(query):
-    """Use Claude with web_search to find real job postings."""
-    if not ANTHROPIC_API_KEY:
-        print("  ❌ No ANTHROPIC_API_KEY found in environment")
-        return []
-
-    try:
-        response = requests.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={
-                "Content-Type": "application/json",
-                "x-api-key": ANTHROPIC_API_KEY,
-                "anthropic-version": "2023-06-01",
-            },
-            json={
-                "model": "claude-sonnet-4-20250514",
-                "max_tokens": 2000,
-                "tools": [{"type": "web_search_20250305", "name": "web_search"}],
-                "system": SYSTEM_PROMPT,
-                "messages": [{
-                    "role": "user",
-                    "content": f"Search for: {query}\n\nSearch multiple times to find as many real current postings as possible. Return JSON array only."
-                }]
-            },
-            timeout=60
-        )
-
-        if response.status_code != 200:
-            print(f"  ❌ API error: {response.status_code} — {response.text[:200]}")
-            return []
-
-        data = response.json()
-        full_text = "".join(
-            block["text"] for block in data.get("content", [])
-            if block.get("type") == "text"
-        ).strip()
-
-        import re
-        match = re.search(r'\[[\s\S]*\]', full_text)
-        if not match:
-            print(f"  ⚠️  No JSON array in response")
-            return []
-
-        jobs = json.loads(match.group())
-        valid = [j for j in jobs if j.get("url", "").startswith("http")]
-        print(f"  ✅ {len(valid)} jobs found")
-        return valid
-
-    except Exception as e:
-        print(f"  ❌ Error: {e}")
-        return []
-
-
 def send_telegram(text):
-    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT:
         return
     try:
         requests.post(
             f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
-            json={
-                "chat_id": TELEGRAM_CHAT_ID,
-                "text": text,
-                "parse_mode": "HTML",
-                "disable_web_page_preview": False
-            },
+            json={"chat_id": TELEGRAM_CHAT, "text": text,
+                  "parse_mode": "HTML", "disable_web_page_preview": False},
             timeout=10
         )
     except Exception:
@@ -134,34 +91,81 @@ def send_telegram(text):
 
 
 def main():
-    print("\n🔍 BD CSE Lecturer Job Tracker — Claude AI Search")
+    print("\n🔍 BD CSE Lecturer Tracker — Serper.dev Free Search")
     print("=" * 52)
 
     all_found = []
     seen_urls = set()
 
-    for i, query in enumerate(SEARCH_QUERIES, 1):
-        print(f"\n[{i}/{len(SEARCH_QUERIES)}] {query[:60]}")
-        jobs = search_with_claude(query)
-        for job in jobs:
-            url = job.get("url", "")
-            if url and url not in seen_urls:
-                seen_urls.add(url)
-                job["id"] = make_id(job.get("title", ""), url)
-                job["found_at"] = datetime.now(timezone.utc).isoformat()
-                job["notified"] = False
-                all_found.append(job)
+    for i, q in enumerate(SEARCHES, 1):
+        print(f"\n[{i}/{len(SEARCHES)}] {q[:55]}...")
+        results = google_search(q)
 
-    print(f"\n📋 Total unique jobs found: {len(all_found)}")
+        for item in results:
+            title   = item.get("title", "").strip()
+            url     = item.get("link", "").strip()
+            snippet = item.get("snippet", "").strip()
+            combined = f"{title} {snippet}"
 
-    # Merge with existing
+            if not url or url in seen_urls:
+                continue
+            if not is_valid(combined):
+                continue
+
+            # Extract deadline from snippet
+            deadline = ""
+            dl_match = re.search(
+                r"(deadline|last date|apply by)[:\s]*([A-Za-z]+ \d{1,2},?\s*\d{4}|\d{1,2} [A-Za-z]+ \d{4}|\d{1,2}/\d{1,2}/\d{4})",
+                snippet, re.I
+            )
+            if dl_match:
+                deadline = dl_match.group(2).strip()
+
+            # Determine source
+            source = "Web"
+            if "bdjobs.com" in url:    source = "BDJobs"
+            elif "bracu.ac.bd" in url: source = "BRAC University"
+            elif "northsouth.edu" in url: source = "North South University"
+            elif "aiub.edu" in url:    source = "AIUB"
+            elif "uiu.ac.bd" in url:   source = "UIU"
+            elif "ewubd.edu" in url:   source = "East West University"
+            elif "thefinancialexpress.com" in url: source = "Financial Express"
+            elif "thedailystar.net" in url: source = "The Daily Star"
+
+            # Institution from title/snippet
+            inst = source
+            for uni in ["BRAC", "North South", "NSU", "AIUB", "UIU", "EWU",
+                        "IUB", "AUST", "DIU", "Daffodil", "Stamford", "BUET",
+                        "CUET", "RUET", "Dhaka University"]:
+                if uni.lower() in combined.lower():
+                    inst = uni
+                    break
+
+            seen_urls.add(url)
+            all_found.append({
+                "id":          make_id(url),
+                "title":       title,
+                "institution": inst,
+                "source":      source,
+                "url":         url,
+                "deadline":    deadline,
+                "snippet":     snippet[:150],
+                "found_at":    datetime.now(timezone.utc).isoformat(),
+                "notified":    False,
+            })
+
+        time.sleep(1)   # be gentle with the API
+
+    print(f"\n📋 Found: {len(all_found)} relevant results")
+
+    # Merge with existing, remove >45 day old jobs
     existing = load_existing()
-
-    # Remove jobs older than 45 days
     cutoff = datetime.now(timezone.utc) - timedelta(days=45)
     existing["jobs"] = [
         j for j in existing["jobs"]
-        if datetime.fromisoformat(j.get("found_at", "2000-01-01").replace("Z", "+00:00")).replace(tzinfo=timezone.utc) > cutoff
+        if datetime.fromisoformat(
+            j.get("found_at", "2000-01-01").replace("Z", "+00:00")
+        ).replace(tzinfo=timezone.utc) > cutoff
     ]
 
     existing_ids  = {j["id"] for j in existing["jobs"]}
@@ -169,43 +173,34 @@ def main():
 
     added = []
     for job in all_found:
-        if job["id"] not in existing_ids and job.get("url") not in existing_urls:
+        if job["id"] not in existing_ids and job["url"] not in existing_urls:
             existing["jobs"].insert(0, job)
             added.append(job)
             existing_ids.add(job["id"])
-            existing_urls.add(job.get("url", ""))
+            existing_urls.add(job["url"])
 
     existing["last_updated"] = datetime.now(timezone.utc).isoformat()
     existing["jobs"] = existing["jobs"][:300]
     save_data(existing)
 
-    # Save new jobs for notifier
     with open("new_jobs.json", "w", encoding="utf-8") as f:
         json.dump(added, f, ensure_ascii=False, indent=2)
 
-    print(f"\n{'=' * 52}")
-    print(f"✅ New: {len(added)} | Total stored: {len(existing['jobs'])}")
-    print(f"{'=' * 52}")
+    print(f"✅ New: {len(added)} | Stored: {len(existing['jobs'])}")
 
-    # Send Telegram for each new job
-    if added:
-        for job in added:
-            dl = f"\n⏰ <b>Deadline:</b> {job['deadline']}" if job.get("deadline") and job["deadline"] != "N/A" else ""
-            msg = (
-                f"🎓 <b>New CSE/IT Lecturer Job!</b>\n\n"
-                f"📌 <b>{job['title']}</b>\n"
-                f"🏫 {job['institution']}\n"
-                f"🌐 {job['source']}"
-                f"{dl}\n"
-                f"🔗 <a href='{job['url']}'>View Circular →</a>"
-            )
-            send_telegram(msg)
-            import time; time.sleep(0.8)
+    # Telegram notifications
+    for job in added:
+        dl  = f"\n⏰ <b>Deadline:</b> {job['deadline']}" if job.get("deadline") else ""
+        msg = (f"🎓 <b>New CSE/IT Lecturer Job!</b>\n\n"
+               f"📌 <b>{job['title']}</b>\n"
+               f"🏫 {job['institution']}\n"
+               f"🌐 {job['source']}{dl}\n"
+               f"🔗 <a href='{job['url']}'>View Circular →</a>")
+        send_telegram(msg)
+        time.sleep(0.8)
 
-        if len(added) >= 3:
-            send_telegram(f"📊 <b>Summary:</b> {len(added)} new CSE/IT Lecturer jobs found! 🎉")
-    else:
-        print("No new jobs this run.")
+    if len(added) >= 3:
+        send_telegram(f"📊 <b>Summary:</b> {len(added)} new CSE/IT Lecturer jobs found! 🎉")
 
 
 if __name__ == "__main__":
